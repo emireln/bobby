@@ -1,12 +1,9 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import {
-  AnimateIcon,
-  ArchiveAnimated,
-  ClapperboardAnimated,
-  PaintbrushAnimated,
-  SettingsAnimated
-} from '@respeak/lucide-motion-vue'
+import ArchiveIcon from '@/components/icons/ArchiveIcon.vue'
+import ClapIcon from '@/components/icons/ClapIcon.vue'
+import SettingsIcon from '@/components/icons/SettingsIcon.vue'
+import SprayCanIcon from '@/components/icons/SprayCanIcon.vue'
 import { t } from '@/i18n'
 
 export type ViewId = 'personnaliser' | 'animations' | 'coffre' | 'reglages'
@@ -20,6 +17,7 @@ const ITEMS = computed<Array<{ id: ViewId; label: string }>>(() => [
   { id: 'reglages', label: t('rail.settings') }
 ])
 
+const hoveredItem = ref<ViewId | null>(null)
 const muted = ref<ViewId | null>(null)
 </script>
 
@@ -33,7 +31,8 @@ const muted = ref<ViewId | null>(null)
         v-for="item in ITEMS"
         :key="item.id"
         class="group relative"
-        @pointerleave="muted = null"
+        @mouseenter="hoveredItem = item.id"
+        @mouseleave="hoveredItem = null; muted = null"
       >
         <button
           type="button"
@@ -48,32 +47,33 @@ const muted = ref<ViewId | null>(null)
           @pointerdown="muted = item.id"
           @click="view = item.id"
         >
-          <AnimateIcon
-            :animate-on-hover="true"
-            as="span"
-            class="flex items-center justify-center pointer-events-none"
-          >
-            <ClapperboardAnimated
-              v-if="item.id === 'animations'"
-              :size="20"
-              :stroke-width="2"
-            />
-            <ArchiveAnimated
-              v-else-if="item.id === 'coffre'"
-              :size="20"
-              :stroke-width="2"
-            />
-            <SettingsAnimated
-              v-else-if="item.id === 'reglages'"
-              :size="20"
-              :stroke-width="2"
-            />
-            <PaintbrushAnimated
-              v-else
-              :size="20"
-              :stroke-width="2"
-            />
-          </AnimateIcon>
+          <!-- Animations: ClapIcon -->
+          <ClapIcon
+            v-if="item.id === 'animations'"
+            :size="20"
+            :hovered="hoveredItem === 'animations'"
+          />
+
+          <!-- Vault: ArchiveIcon -->
+          <ArchiveIcon
+            v-else-if="item.id === 'coffre'"
+            :size="20"
+            :hovered="hoveredItem === 'coffre'"
+          />
+
+          <!-- Settings: SettingsIcon -->
+          <SettingsIcon
+            v-else-if="item.id === 'reglages'"
+            :size="20"
+            :hovered="hoveredItem === 'reglages'"
+          />
+
+          <!-- Personalize: SprayCanIcon -->
+          <SprayCanIcon
+            v-else
+            :size="20"
+            :hovered="hoveredItem === 'personnaliser'"
+          />
         </button>
 
         <!-- Tooltip -->
