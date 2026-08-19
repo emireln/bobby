@@ -487,9 +487,22 @@ const NOM = 'BOBBY'
  *   comme un sautillement, et ce n'est pas corrigeable ailleurs : `radiusAtAngle`
  *   fait exactement ce pour quoi il est la.
  */
-const forme = computed(() =>
-  view.value === 'reglages' || nue.value ? DEFAULT_SHAPE : shape.value
-)
+/**
+ * Sequence des formes morphant sur le bot geant des reglages :
+ * cloud (nuage) -> circle (cercle) -> star (etoile) -> pebble (galet).
+ */
+const GEANT_SHAPES = ['nuage', 'cercle', 'etoile', 'galet'] as const
+const geantShapeIndex = ref(0)
+let geantShapeTimer: ReturnType<typeof setInterval> | undefined
+const GEANT_SHAPE_MS = 2500
+
+const forme = computed(() => {
+  if (view.value === 'reglages') {
+    return GEANT_SHAPES[geantShapeIndex.value] ?? 'nuage'
+  }
+  if (nue.value) return DEFAULT_SHAPE
+  return shape.value
+})
 
 /** Duree d'une humeur. Assez longue pour qu'on la remarque sans qu'elle agite. */
 const HUMEUR_MS = 4200
@@ -497,20 +510,32 @@ const HUMEUR_MS = 4200
 const humeur = ref<string | null>(null)
 let humeurTimer: ReturnType<typeof setInterval> | undefined
 
-watch(view, (v) => {
-  clearInterval(humeurTimer)
-  if (v !== 'reglages') {
-    // retour a l'expression de l'utilisateur, en morphant comme le reste
-    humeur.value = null
-    return
-  }
-  // on part de SON expression et on derive ensuite : le changement se remarque
-  let i = 0
-  humeurTimer = setInterval(() => {
-    humeur.value = HUMEURS[i % HUMEURS.length]!
-    i++
-  }, HUMEUR_MS)
-})
+watch(
+  view,
+  (v) => {
+    clearInterval(humeurTimer)
+    clearInterval(geantShapeTimer)
+    if (v !== 'reglages') {
+      // retour a la forme et l'expression de l'utilisateur
+      humeur.value = null
+      geantShapeIndex.value = 0
+      return
+    }
+    // animation des formes : nuage -> cercle -> etoile -> galet
+    geantShapeIndex.value = 0
+    geantShapeTimer = setInterval(() => {
+      geantShapeIndex.value = (geantShapeIndex.value + 1) % GEANT_SHAPES.length
+    }, GEANT_SHAPE_MS)
+
+    // on part de SON expression et on derive ensuite : le changement se remarque
+    let i = 0
+    humeurTimer = setInterval(() => {
+      humeur.value = HUMEURS[i % HUMEURS.length]!
+      i++
+    }, HUMEUR_MS)
+  },
+  { immediate: true }
+)
 
 const order = computed(() => STATES)
 
