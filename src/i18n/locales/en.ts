@@ -31,6 +31,20 @@ const en = {
     bubble_clear: 'Clear bubble'
   },
 
+  vault: {
+    title: 'Avatar Vault',
+    save: 'Save to Vault',
+    saved: 'Saved to Vault!',
+    name_placeholder: 'Avatar name...',
+    empty: 'No saved avatars in vault yet',
+    export_all: 'Export JSON',
+    import: 'Import JSON',
+    import_success: 'Avatars imported!',
+    import_error: 'Invalid JSON vault file',
+    delete: 'Delete avatar',
+    load: 'Load avatar'
+  },
+
   export: {
     action: 'Export as PNG',
     more: 'Other formats',

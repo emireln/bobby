@@ -33,6 +33,20 @@ const ptBr: typeof en = {
     bubble_clear: 'Limpar balão'
   },
 
+  vault: {
+    title: 'Cofre de Avatares',
+    save: 'Salvar no Cofre',
+    saved: 'Salvo no Cofre!',
+    name_placeholder: 'Nome do avatar...',
+    empty: 'Nenhum avatar no cofre ainda',
+    export_all: 'Exportar JSON',
+    import: 'Importar JSON',
+    import_success: 'Avatares importados!',
+    import_error: 'Arquivo JSON inválido',
+    delete: 'Excluir avatar',
+    load: 'Carregar avatar'
+  },
+
   export: {
     action: 'Exportar como PNG',
     more: 'Outros formatos',
