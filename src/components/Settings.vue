@@ -197,19 +197,32 @@ function auClavier(event: KeyboardEvent, index: number) {
       </svg>
     </a>
 
-    <!-- Soutien : Buy Me a Coffee propre, minimaliste, aligne sur l'UI -->
+    <!-- Soutien : Soutenir le projet, aligne sur le style de l'interface -->
     <a
-      class="group mt-2 flex items-center justify-between gap-2.5 rounded-xl border border-[var(--line)] px-3 py-2 text-sm font-medium text-[var(--ink)] transition hover:border-[var(--muted)]"
+      class="group mt-2 flex items-center gap-2 rounded-xl border border-[var(--line)] px-3 py-2 text-sm transition hover:border-[var(--muted)]"
       :href="SUPPORT_URL"
       target="_blank"
       rel="noopener noreferrer"
       :aria-label="t('settings.support')"
     >
-      <div class="flex items-center gap-2.5">
-        <span class="inline-block text-base transition-transform duration-300 ease-out group-hover:scale-125 group-hover:-rotate-12" aria-hidden="true">☕</span>
-        <span>{{ t('settings.support') }}</span>
-      </div>
-      <span class="text-xs text-[var(--muted)] transition-colors group-hover:text-[var(--ink)]">Buy Me a Coffee ↗</span>
+      <span class="inline-block text-base transition-transform duration-300 ease-out group-hover:scale-125 group-hover:-rotate-12" aria-hidden="true">☕</span>
+      <span class="flex-1">{{ t('settings.support') }}</span>
+      <svg
+        width="11"
+        height="11"
+        viewBox="0 0 12 12"
+        aria-hidden="true"
+        class="shrink-0 text-[var(--muted)]"
+      >
+        <path
+          d="M4 2h6v6M10 2 3 9"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.4"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
     </a>
 
     <p class="mt-4 text-xs text-[var(--muted)]">
