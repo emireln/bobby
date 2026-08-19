@@ -115,100 +115,53 @@ const fav48Html = `<!DOCTYPE html>
 </body>
 </html>`
 
-// Minimalist Modern Banner HTML (1200x630)
+// Ultra-Minimalist Clean Modern Banner HTML (1200x630)
 const bannerHtml = `<!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
     width: 1200px;
     height: 630px;
     background-color: #09090b;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     color: #ffffff;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 100px;
-    overflow: hidden;
-    position: relative;
-  }
-  .glow {
-    position: absolute;
-    right: 80px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 500px;
-    height: 500px;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0) 70%);
-    pointer-events: none;
-  }
-  .content {
-    display: flex;
     flex-direction: column;
-    gap: 20px;
-    max-width: 560px;
-    z-index: 1;
-  }
-  .badge {
-    display: inline-flex;
-    align-items: center;
-    align-self: flex-start;
-    padding: 6px 14px;
-    border-radius: 9999px;
-    background: #18181b;
-    border: 1px solid #27272a;
-    font-size: 13px;
-    font-weight: 500;
-    color: #a1a1aa;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-  }
-  h1 {
-    font-size: 80px;
-    font-weight: 900;
-    letter-spacing: -0.04em;
-    line-height: 0.95;
-    color: #f4f4f5;
-  }
-  p.subtitle {
-    font-size: 24px;
-    line-height: 1.45;
-    font-weight: 400;
-    color: #a1a1aa;
-  }
-  .repo {
-    margin-top: 12px;
-    font-size: 15px;
-    font-weight: 500;
-    color: #71717a;
-    letter-spacing: 0.01em;
-  }
-  .avatar-wrap {
-    z-index: 1;
-    display: flex;
     align-items: center;
     justify-content: center;
+    text-align: center;
+    overflow: hidden;
   }
-  .avatar-wrap svg {
-    width: 320px;
-    height: 320px;
-    filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.6));
+  .avatar {
+    width: 190px;
+    height: 190px;
+    margin-bottom: 32px;
+  }
+  .avatar svg {
+    width: 100%;
+    height: 100%;
+  }
+  h1 {
+    font-size: 64px;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    color: #f4f4f5;
+    margin-bottom: 14px;
+  }
+  p.subtitle {
+    font-size: 20px;
+    font-weight: 400;
+    color: #71717a;
+    letter-spacing: -0.01em;
   }
 </style>
 </head>
 <body>
-  <div class="glow"></div>
-  <div class="content">
-    <div class="badge">SVG Avatar</div>
-    <h1>bobby</h1>
-    <p class="subtitle">Animated avatar with 16 customizable shapes, 24 expressions & timeline studio.</p>
-    <div class="repo">github.com/emireln/bobby</div>
-  </div>
-  <div class="avatar-wrap">
+  <div class="avatar">
     <svg viewBox="-110 -110 220 220">
       <defs>
         <mask id="eyes">
@@ -220,15 +173,15 @@ const bannerHtml = `<!DOCTYPE html>
       <path d="${frame.bodyPath}" fill="#ffffff" mask="url(#eyes)" />
     </svg>
   </div>
+  <h1>bobby</h1>
+  <p class="subtitle">Pure SVG animated avatar & timeline studio</p>
 </body>
 </html>`
 
 const applePath = path.join(tmpDir, 'apple.html')
-const fav48Path = path.join(tmpDir, 'fav48.html')
 const bannerPath = path.join(tmpDir, 'banner.html')
 
 fs.writeFileSync(applePath, appleIconHtml, 'utf8')
-fs.writeFileSync(fav48Path, fav48Html, 'utf8')
 fs.writeFileSync(bannerPath, bannerHtml, 'utf8')
 
 const edgeBin = 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe'
@@ -236,13 +189,12 @@ const edgeBin = 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.e
 function capture(htmlFile: string, outFile: string, width: number, height: number) {
   const fileUrl = `file:///${htmlFile.replace(/\\/g, '/')}`
   const out = outFile.replace(/\\/g, '/')
-  const cmd = `"${edgeBin}" --headless=new --disable-gpu --force-device-scale-factor=1 --hide-scrollbars --window-size=${width},${height} --screenshot="${out}" "${fileUrl}"`
+  const cmd = `"${edgeBin}" --headless=new --disable-gpu --virtual-time-budget=2000 --force-device-scale-factor=1 --hide-scrollbars --window-size=${width},${height} --screenshot="${out}" "${fileUrl}"`
   console.log(`Rendering ${path.basename(outFile)} (${width}x${height})...`)
   execSync(cmd, { stdio: 'inherit' })
 }
 
 capture(applePath, path.join(publicDir, 'apple-touch-icon.png'), 180, 180)
-capture(fav48Path, path.join(tmpDir, 'fav48.png'), 48, 48)
 capture(bannerPath, path.join(publicDir, 'banner.png'), 1200, 630)
 
 console.log('Raster rendering complete.')
