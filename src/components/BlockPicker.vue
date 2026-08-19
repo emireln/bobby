@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import BotTile from '@/components/BotTile.vue'
-import { POSES, SEQUENCE, STATE_BY_ID, type StateId } from '@/bot/states'
+import { POSES, STATES, type StateId } from '@/bot/states'
 import { t } from '@/i18n'
 
 /**
@@ -11,8 +11,8 @@ import { t } from '@/i18n'
 defineProps<{ shape: string; color: string; expression: string }>()
 const emit = defineEmits<{ pick: [state: StateId] }>()
 
-/** Les animations dans l'ordre de la video. */
-const PALETTE = SEQUENCE.map((id) => STATE_BY_ID.get(id)!)
+/** Toutes les animations disponibles. */
+const PALETTE = STATES
 
 /** Largeur de la palette, en pixels — elle sert aussi a la caler. */
 const WIDTH = 288

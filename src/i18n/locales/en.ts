@@ -105,6 +105,10 @@ const en = {
   settings: {
     title: 'Settings',
     language: 'Language',
+    theme: 'Theme',
+    theme_light: 'Light',
+    theme_dark: 'Dark',
+    theme_system: 'System',
     about: 'About',
     credits: 'Made with ❤️ by {name}',
     creditsAria: 'Emir Lima Neto on GitHub, in a new tab',

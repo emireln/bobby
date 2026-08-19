@@ -1,36 +1,53 @@
 @import 'tailwindcss';
 
 :root {
-  /* Fond releve au pixel sur la video de reference. */
+  /* Fond principal de l'application (mode clair) */
   --paper: #f9f9f9;
   /*
-   * Couleur principale de l'INTERFACE : un bleu nuit choisi, pas releve. Le
-   * noir de la video, lui, n'a pas bouge — c'est celui du bot, dans skins.ts
-   * (`encre`, #0a0a0c). Les deux ne doivent pas etre confondus : changer
-   * celle-ci retouche le decor, changer l'autre casse la ressemblance.
+   * Couleur principale de l'INTERFACE : noir neutre profond.
    */
-  --ink: #17203a;
-  --line: #e3e5ea;
-  --muted: #6e7382;
-  /* Rouge d'interface pour les actions destructrices — choisi, comme --ink. */
-  --danger: #d63c34;
+  --ink: #0a0a0c;
+  --line: #e4e4e7;
+  --muted: #71717a;
+  /* Rouge d'interface pour les actions destructrices. */
+  --danger: #dc2626;
 
-  /**
-   * Hauteur de la barre de montage. Elle est fixee en bas, donc c'est la scene
-   * qui lui reserve sa place — dans les DEUX vues, sinon l'avatar centre change
-   * de position en passant a la personnalisation.
-   */
   --timeline: 236px;
-
-  /**
-   * Duree et courbe du passage d'une vue a l'autre : le glissement de la scene et
-   * la croissance de la boule. Le tour du regard, lui, a sa propre duree
-   * (`TURN_TIME` de `src/ui/gaze.ts`), volontairement un peu plus longue — les
-   * yeux finissent de se poser apres que la boule a fini de grandir, ce qui fait
-   * lire les deux comme un seul mouvement qui se termine. Ease-out sans
-   * depassement, comme tout le reste du projet.
-   */
   --bascule: 1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.dark {
+  --paper: #09090b;
+  --ink: #f4f4f5;
+  --line: #27272a;
+  --muted: #a1a1aa;
+  color-scheme: dark;
+}
+
+.dark .bg-white {
+  background-color: #18181b;
+}
+
+.dark .bg-white\/85 {
+  background-color: rgb(24 24 27 / 0.85);
+}
+
+.dark .hover\:bg-black\/5:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.dark .hover\:bg-\[var\(--line\)\]:hover {
+  background-color: #27272a;
+}
+
+.dark .dialogue {
+  background-color: #18181b;
+  color: #f4f4f5;
+  border-color: #27272a;
+}
+
+.dark .dialogue::backdrop {
+  background: rgb(0 0 0 / 0.75);
 }
 
 /*
@@ -194,9 +211,9 @@ body,
   padding-right: 0.1em;
   background: linear-gradient(
     180deg,
-    rgb(23 32 58 / 0.22) 0%,
-    rgb(23 32 58 / 0.1) 48%,
-    rgb(23 32 58 / 0) 88%
+    rgb(10 10 12 / 0.18) 0%,
+    rgb(10 10 12 / 0.08) 48%,
+    rgb(10 10 12 / 0) 88%
   );
   -webkit-background-clip: text;
   background-clip: text;
@@ -325,6 +342,13 @@ body,
  * de s'ecraser.
  */
 .barre-export {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  z-index: 20;
   transition:
     opacity 0.6s ease-out,
     transform 0.6s ease-out;
@@ -494,21 +518,13 @@ body,
    */
   .barre-export {
     position: fixed;
+    bottom: 2rem;
     left: 4.5rem;
     right: 24.5rem;
+    top: auto;
     display: flex;
     justify-content: center;
-    /*
-     * Juste sous la boite de l'avatar : haut de la bande + demi-bande (le centre
-     * de la boite, qui y est centree) + demi-boite. Le `min()` est celui du
-     * `max-w` de `.avatar`, donc la barre suit son retrecissement sur une fenetre
-     * basse. Le demi-rem final la fait mordre dans la marge morte du bas de la
-     * boite, ou la silhouette ne va pas.
-     */
-    top: calc(
-      2rem + (100dvh - 3rem - var(--timeline)) / 2 +
-        min(460px, 100dvh - var(--timeline) - 7rem) / 2 - 0.5rem
-    );
+    z-index: 20;
   }
 }
 

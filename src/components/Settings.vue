@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { langue, LANGUES, t } from '@/i18n'
+import { theme, THEMES } from '@/ui/theme'
 
 /** Comptes de l'auteur. */
 const AUTHOR_URL = 'https://github.com/emireln'
@@ -99,6 +100,26 @@ function auClavier(event: KeyboardEvent, index: number) {
             stroke-linejoin="round"
           />
         </svg>
+      </button>
+    </div>
+
+    <h2 class="mt-6 text-sm font-semibold">{{ t('settings.theme') }}</h2>
+    <div class="mt-2 flex gap-1 rounded-xl border border-[var(--line)] p-1" role="radiogroup" :aria-label="t('settings.theme')">
+      <button
+        v-for="th in THEMES"
+        :key="th.id"
+        type="button"
+        role="radio"
+        :aria-checked="th.id === theme"
+        class="flex flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-lg py-1.5 px-2 text-xs font-medium transition"
+        :class="
+          th.id === theme
+            ? 'bg-[var(--ink)] text-[var(--paper)] shadow-sm'
+            : 'text-[var(--muted)] hover:text-[var(--ink)]'
+        "
+        @click="theme = th.id"
+      >
+        <span>{{ t(`settings.${th.nom}`) }}</span>
       </button>
     </div>
 

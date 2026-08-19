@@ -107,6 +107,10 @@ const ptBr: typeof en = {
   settings: {
     title: 'Configurações',
     language: 'Idioma',
+    theme: 'Tema',
+    theme_light: 'Claro',
+    theme_dark: 'Escuro',
+    theme_system: 'Sistema',
     about: 'Sobre',
     credits: 'Feito com ❤️ por {name}',
     creditsAria: 'Emir Lima Neto no GitHub, em uma nova aba',

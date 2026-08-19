@@ -55,7 +55,7 @@ import {
 } from '@/bot/cycles'
 import { DEFAULT_EXPRESSION, EXPRESSION_BY_ID } from '@/bot/expressions'
 import { COLOR_BY_ID, DEFAULT_COLOR, DEFAULT_SHAPE, SHAPE_BY_ID } from '@/bot/skins'
-import { POSES, SEQUENCE, STATES, type StateId } from '@/bot/states'
+import { POSES, STATES, type StateId } from '@/bot/states'
 
 /**
  * L'URL pilote la vue : `#etat=orbit&stop` ouvre un etat precis sequence a
@@ -512,7 +512,7 @@ watch(view, (v) => {
   }, HUMEUR_MS)
 })
 
-const order = computed(() => SEQUENCE.map((id) => STATES.find((s) => s.id === id)!))
+const order = computed(() => STATES)
 
 /** Ajoute une animation a la fin du montage courant. */
 function addBlock(id: StateId) {
@@ -840,11 +840,11 @@ watch(
            haut que la grille d'animations, et l'avatar centre changeait de
            place d'un onglet a l'autre. -->
       <main
-        class="scene__avatar relative flex flex-1 items-center justify-center max-lg:order-1 max-lg:flex-col max-lg:gap-4 lg:self-start"
+        class="scene__avatar relative flex flex-1 items-center justify-center max-lg:order-1 max-lg:flex-col max-lg:gap-4"
         :class="
-          preview
-            ? 'lg:min-h-[calc(100dvh_-_4rem)]'
-            : 'lg:min-h-[calc(100dvh_-_3rem_-_var(--timeline))]'
+          view === 'animations' && !preview
+            ? 'lg:self-start lg:min-h-[calc(100dvh_-_3rem_-_var(--timeline))]'
+            : 'self-center lg:min-h-[calc(100dvh_-_4rem)]'
         "
       >
         <!-- l'avatar se met a la hauteur disponible : sur une fenetre basse, la
@@ -853,9 +853,9 @@ watch(
         <div
           class="avatar flex aspect-square w-full items-center justify-center"
           :class="[
-            preview
-              ? 'max-w-[min(560px,calc(100dvh_-_6rem))]'
-              : 'max-w-[min(460px,calc(100dvh_-_var(--timeline)_-_7rem))]',
+            view === 'animations' && !preview
+              ? 'max-w-[min(460px,calc(100dvh_-_var(--timeline)_-_7rem))]'
+              : 'max-w-[min(520px,calc(100dvh_-_6rem))]',
             nue && 'avatar--intro',
             view === 'reglages' && !preview && 'avatar--geant'
           ]"
