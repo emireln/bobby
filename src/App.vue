@@ -57,6 +57,7 @@ import {
 } from '@/bot/cycles'
 import { DEFAULT_EXPRESSION, EXPRESSION_BY_ID } from '@/bot/expressions'
 import { COLOR_BY_ID, DEFAULT_COLOR, DEFAULT_SHAPE, SHAPE_BY_ID } from '@/bot/skins'
+import { isDark } from '@/ui/theme'
 import { POSES, STATES, type StateId } from '@/bot/states'
 
 /**
@@ -449,6 +450,23 @@ const expression = ref(
 watch(shape, (v) => ecris('forme', v))
 watch(color, (v) => ecris('couleur', v))
 watch(expression, (v) => ecris('expression', v))
+
+/**
+ * Le corps du bot est peint sur un fond OPAQUE de la couleur de la page (ce qui
+ * bouche les yeux, qui sont des trous). Sans lui, en sombre, cette planche
+ * restait `#f9f9f9` : un disque beige derriere le geant des reglages.
+ */
+const fondGlobal = computed(() => (isDark.value ? '#09090b' : '#f9f9f9'))
+
+/**
+ * En sombre, la couleur par defaut (`encre`, un noir mesure sur la video) se
+ * confond avec le fond : le geant des reglages devient alors blanc. Seul cas ou
+ * le corps ne suit pas le personnalisateur — l'export, lui, garde la vraie
+ * couleur parce qu'il lit `color` directement.
+ */
+const inkGeant = computed(() =>
+  view.value === 'reglages' && isDark.value && color.value === DEFAULT_COLOR ? '#ffffff' : undefined
+)
 
 function onLoadSavedAvatar(av: { shape: string; color: string; expression: string }) {
   shape.value = av.shape
@@ -908,6 +926,8 @@ watch(
             :expression="humeur ?? expression"
             :follow="view === 'reglages'"
             :gaze="intro ? INTRO_GAZE : null"
+            :paper="fondGlobal"
+            :ink="inkGeant"
           />
         </div>
 

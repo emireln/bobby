@@ -27,6 +27,8 @@ const props = withDefaults(
     shape?: string
     /** identifiant de couleur du personnalisateur */
     color?: string
+    /** couleur du corps en hex, qui prime sur `color` (le geant des reglages) */
+    ink?: string
     /** identifiant d'expression de repos du personnalisateur */
     expression?: string
     /** couleur du fond, utilisee pour la brume de profondeur des particules */
@@ -60,6 +62,7 @@ const props = withDefaults(
     size: 320,
     shape: DEFAULT_SHAPE,
     color: DEFAULT_COLOR,
+    ink: undefined,
     expression: DEFAULT_EXPRESSION,
     paper: '#f9f9f9',
     frozenAt: undefined,
@@ -88,7 +91,7 @@ const R = RAYON
 const VB = DEMI_VIEWBOX
 
 const shapeRadii = computed(() => SHAPE_BY_ID.get(props.shape)?.radii ?? null)
-const ink = computed(() => COLOR_BY_ID.get(props.color)?.hex ?? '#0a0a0c')
+const ink = computed(() => props.ink ?? COLOR_BY_ID.get(props.color)?.hex ?? '#0a0a0c')
 const expression = computed(() => EXPRESSION_BY_ID.get(props.expression) ?? null)
 
 const engine = new BotEngine(R, state.value, shapeRadii.value, expression.value)
