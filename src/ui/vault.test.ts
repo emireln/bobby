@@ -24,8 +24,7 @@ describe('Avatar Vault', () => {
       name: 'Super Bobby',
       shape: 'coeur',
       color: 'menthe',
-      expression: 'heureux',
-      bubble: 'Hello!'
+      expression: 'heureux'
     })
 
     expect(avatar.name).toBe('Super Bobby')
@@ -64,8 +63,7 @@ describe('Avatar Vault', () => {
           name: 'Imported Bot',
           shape: 'non-existent',
           color: 'ciel',
-          expression: 'curieux',
-          bubble: 'Nice!'
+          expression: 'curieux'
         }
       ]
     })
@@ -75,7 +73,6 @@ describe('Avatar Vault', () => {
     expect(parsed[0]?.shape).toBe('nuage')
     expect(parsed[0]?.color).toBe('ciel')
     expect(parsed[0]?.expression).toBe('curieux')
-    expect(parsed[0]?.bubble).toBe('Nice!')
   })
 
   it('renames an avatar', () => {

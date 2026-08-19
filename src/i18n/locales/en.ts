@@ -17,6 +17,7 @@ const en = {
     nav: 'Sections',
     customize: 'Customise',
     animations: 'Animations',
+    vault: 'Vault',
     settings: 'Settings'
   },
 
@@ -25,10 +26,7 @@ const en = {
     shape: 'Shape',
     expression: 'Expression',
     color: 'Colour',
-    randomize: 'Randomize',
-    bubble: 'Speech bubble',
-    bubble_placeholder: 'Say something...',
-    bubble_clear: 'Clear bubble'
+    randomize: 'Randomize'
   },
 
   vault: {

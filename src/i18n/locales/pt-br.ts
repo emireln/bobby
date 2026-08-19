@@ -19,6 +19,7 @@ const ptBr: typeof en = {
     nav: 'Seções',
     customize: 'Personalizar',
     animations: 'Animações',
+    vault: 'Cofre',
     settings: 'Configurações'
   },
 
@@ -27,10 +28,7 @@ const ptBr: typeof en = {
     shape: 'Forma',
     expression: 'Expressão',
     color: 'Cor',
-    randomize: 'Aleatório',
-    bubble: 'Balão de fala',
-    bubble_placeholder: 'Diga algo...',
-    bubble_clear: 'Limpar balão'
+    randomize: 'Aleatório'
   },
 
   vault: {

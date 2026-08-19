@@ -8,7 +8,6 @@ export interface SavedAvatar {
   shape: string
   color: string
   expression: string
-  bubble?: string
   createdAt: number
 }
 
@@ -36,8 +35,7 @@ export function isValidAvatar(item: unknown): item is SavedAvatar {
     typeof a.name === 'string' &&
     typeof a.shape === 'string' &&
     typeof a.color === 'string' &&
-    typeof a.expression === 'string' &&
-    (a.bubble === undefined || typeof a.bubble === 'string')
+    typeof a.expression === 'string'
   )
 }
 
@@ -151,7 +149,6 @@ export function parseVaultImport(jsonStr: string): SavedAvatar[] {
         : 'neutre'
     const name =
       typeof item.name === 'string' && item.name.trim() ? item.name.trim().slice(0, 30) : 'Bobby'
-    const bubble = typeof item.bubble === 'string' ? item.bubble.slice(0, 40) : undefined
 
     result.push({
       id: typeof item.id === 'string' ? item.id : `av_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
@@ -159,7 +156,6 @@ export function parseVaultImport(jsonStr: string): SavedAvatar[] {
       shape,
       color,
       expression,
-      bubble,
       createdAt: typeof item.createdAt === 'number' ? item.createdAt : Date.now()
     })
   }

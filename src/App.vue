@@ -10,6 +10,7 @@ import Settings from '@/components/Settings.vue'
 import SideRail, { type ViewId } from '@/components/SideRail.vue'
 import Timeline from '@/components/Timeline.vue'
 import TitleBar from '@/components/TitleBar.vue'
+import VaultView from '@/components/VaultView.vue'
 import { nomDeCycle, t } from '@/i18n'
 import {
   copie,
@@ -444,12 +445,16 @@ const color = ref(stored('couleur', DEFAULT_COLOR, (v) => COLOR_BY_ID.has(v)))
 const expression = ref(
   stored('expression', DEFAULT_EXPRESSION, (v) => EXPRESSION_BY_ID.has(v))
 )
-const bubble = ref(lis('bulle') ?? '')
 
 watch(shape, (v) => ecris('forme', v))
 watch(color, (v) => ecris('couleur', v))
 watch(expression, (v) => ecris('expression', v))
-watch(bubble, (v) => ecris('bulle', v))
+
+function onLoadSavedAvatar(av: { shape: string; color: string; expression: string }) {
+  shape.value = av.shape
+  color.value = av.color
+  expression.value = av.expression
+}
 
 /**
  * Nom du produit, en capitales pour le grand mot du pied de page. PAS traduit —
@@ -889,16 +894,6 @@ watch(
             view === 'reglages' && !preview && 'avatar--geant'
           ]"
         >
-          <!-- Bulle de dialogue personnalisee et animee -->
-          <div
-            v-if="bubble.trim() && view !== 'reglages' && !nue"
-            class="bulle-chat"
-            aria-live="polite"
-          >
-            <span>{{ bubble }}</span>
-            <div class="bulle-chat__queue"></div>
-          </div>
-
           <BobbyBot
             ref="bot"
             class="h-auto max-w-full"
@@ -916,32 +911,8 @@ watch(
           />
         </div>
 
-        <!--
-          La barre d'export ne decale PAS l'avatar : elle est hors du flux, et
-          `--timeline` est deja soustrait de la hauteur de cette colonne dans les
-          DEUX vues (sinon l'avatar centre changerait de place en passant a la
-          personnalisation), donc la bande sous la boule est deja libre ici. Rien
-          de neuf a reserver, aucune variable a ajouter.
-
-          En `fixed` comme la barre de montage, mais calee sur la COLONNE de
-          l'avatar (`left`/`right`) et non sur la fenetre entiere : son contenu se
-          centre sous la boule, pas au milieu de l'ecran.
-
-          Le calage fin est dans `styles.css` (`.barre-export`), qui a besoin du
-          `min()` de la boite de l'avatar. En dessous de 64rem la regle ne
-          s'applique pas : la scene s'empile, rien n'est reserve, et la barre
-          repasse dans le flux — sinon elle recouvrirait le personnalisateur.
-        -->
-        <!--
-          Montee pendant l'arrivee mais MASQUEE (`nue`), et pas retiree : c'est
-          l'etat de depart de sa transition, et sans lui a l'ecran il n'y aurait
-          rien a interpoler quand elle se revele. Meme montage que `.panneau`.
-
-          `inert` avec le masque : un element a `opacity: 0` reste cliquable et
-          atteignable au clavier.
-        -->
         <div
-          v-if="view === 'personnaliser' && !preview"
+          v-if="(view === 'personnaliser' || view === 'coffre') && !preview"
           class="barre-export"
           :class="(nue || barreCachee) && 'barre-export--cachee'"
           :inert="nue || barreCachee"
@@ -949,14 +920,6 @@ watch(
           <ExportBar :etat="etatExport" @exporter="exporte" />
         </div>
 
-        <!--
-          Les deux boites sont HORS de la barre d'export, alors que c'est elle qui
-          ouvre la seconde : la barre porte `inert` quand elle est masquee, et
-          `inert` s'applique a toute la descendance — y compris a un element passe
-          dans la couche superieure, que rien ne doit pouvoir neutraliser.
-
-          Export du MONTAGE, depuis la barre de montage : format et progression.
-        -->
         <CycleDialog
           v-if="view === 'animations' && !preview"
           v-model:open="dialogueCycle"
@@ -968,28 +931,23 @@ watch(
           @annuler="annuleCycle"
         />
 
-        <!-- Export de l'AVATAR : le GIF est le seul format a demander son fond,
-             voir `exporte`. -->
         <GifDialog
-          v-if="view === 'personnaliser' && !preview"
+          v-if="(view === 'personnaliser' || view === 'coffre') && !preview"
           v-model:open="dialogueGif"
           v-model:fond="fondGif"
           @confirm="exporte('gif', true)"
         />
       </main>
 
-      <!-- largeur fixe, identique dans les deux vues : sinon la scene se decale
-           au changement d'onglet. w-80 est la contrainte du personnalisateur
-           (grille de 4 vignettes), le panneau d'animations s'y adapte. -->
       <aside
         v-if="!preview"
-        class="panneau scene__droite w-full lg:w-80 lg:shrink-0"
+        class="panneau scene__droite w-full lg:w-96 lg:shrink-0"
         :class="droite ? 'panneau--ouvert max-lg:order-2' : 'max-lg:hidden'"
       >
-        <!-- palette : une vignette s'ajoute a la fin du montage -->
+        <!-- animations -->
         <template v-if="view === 'animations'">
           <h2 class="text-sm font-semibold">{{ t('panel.animations') }}</h2>
-          <div class="mt-2 grid grid-cols-4 gap-1.5">
+          <div class="mt-2 grid grid-cols-4 gap-2">
             <BotTile
               v-for="s in order"
               :key="s.id"
@@ -1005,13 +963,22 @@ watch(
           </div>
         </template>
 
+        <!-- cofre (vault) -->
+        <template v-else-if="view === 'coffre'">
+          <VaultView
+            :shape="shape"
+            :color="color"
+            :expression="expression"
+            @load="onLoadSavedAvatar"
+          />
+        </template>
+
         <!-- personnalisation -->
-        <template v-else>
+        <template v-else-if="view === 'personnaliser'">
           <Customizer
             v-model:shape="shape"
             v-model:color="color"
             v-model:expression="expression"
-            v-model:bubble="bubble"
           />
         </template>
       </aside>
