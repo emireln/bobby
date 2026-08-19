@@ -84,14 +84,20 @@ const droplet = normalize(
 /** Capsule couchee : enveloppe de deux disques cote a cote. */
 const capsule = profileFromPolygon(hullOfCircles(-0.42, 0, 0.62, 0.42, 0, 0.62), 0, 0)
 
-/** Coeur : deux lobes superieurs bien dessines, corps plein et pointe douce en bas. */
+/** Coeur : deux lobes superieurs bien dessines, flancs en V sans renflement et pointe douce en bas. */
 const heart = normalize(
   unionOfCirclesProfile([
-    { x: -0.34, y: -0.24, r: 0.52 },
-    { x: 0.34, y: -0.24, r: 0.52 },
-    { x: 0, y: -0.05, r: 0.58 },
-    { x: 0, y: 0.28, r: 0.56 },
-    { x: 0, y: 0.56, r: 0.36 }
+    { x: -0.33, y: -0.26, r: 0.52 },
+    { x: 0.33, y: -0.26, r: 0.52 },
+    { x: 0, y: -0.18, r: 0.66 },
+    { x: -0.20, y: 0.05, r: 0.52 },
+    { x: 0.20, y: 0.05, r: 0.52 },
+    { x: 0, y: 0.05, r: 0.60 },
+    { x: -0.10, y: 0.25, r: 0.44 },
+    { x: 0.10, y: 0.25, r: 0.44 },
+    { x: 0, y: 0.25, r: 0.48 },
+    { x: 0, y: 0.48, r: 0.32 },
+    { x: 0, y: 0.62, r: 0.18 }
   ]),
   1.05
 )
@@ -120,14 +126,23 @@ const flower = normalize(
   1.05
 )
 
-/** Bouclier : epaules douces en haut, pointe en ogive en bas. */
+/** Bouclier : epaules douces en haut, flancs droits et ogive gothique continue vers la pointe. */
 const shield = normalize(
   unionOfCirclesProfile([
-    { x: -0.35, y: -0.2, r: 0.55 },
-    { x: 0.35, y: -0.2, r: 0.55 },
-    { x: 0, y: -0.15, r: 0.65 },
-    { x: 0, y: 0.35, r: 0.58 },
-    { x: 0, y: 0.65, r: 0.28 }
+    { x: -0.32, y: -0.35, r: 0.50 },
+    { x: 0.32, y: -0.35, r: 0.50 },
+    { x: 0, y: -0.32, r: 0.62 },
+    { x: -0.30, y: -0.10, r: 0.52 },
+    { x: 0.30, y: -0.10, r: 0.52 },
+    { x: 0, y: -0.10, r: 0.62 },
+    { x: -0.22, y: 0.15, r: 0.50 },
+    { x: 0.22, y: 0.15, r: 0.50 },
+    { x: 0, y: 0.15, r: 0.56 },
+    { x: -0.12, y: 0.35, r: 0.42 },
+    { x: 0.12, y: 0.35, r: 0.42 },
+    { x: 0, y: 0.35, r: 0.46 },
+    { x: 0, y: 0.55, r: 0.32 },
+    { x: 0, y: 0.70, r: 0.18 }
   ]),
   1.05
 )
