@@ -115,7 +115,8 @@ const ptBr: typeof en = {
     credits: 'Feito com ❤️ por {name}',
     creditsAria: 'Emir Lima Neto no GitHub, em uma nova aba',
     github: 'Ver o projeto no GitHub',
-    githubAria: 'Repositório do projeto no GitHub, em uma nova aba'
+    githubAria: 'Repositório do projeto no GitHub, em uma nova aba',
+    support: 'Apoie o projeto'
   },
 
   states: {

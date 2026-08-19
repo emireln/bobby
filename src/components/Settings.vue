@@ -6,6 +6,7 @@ import { theme, THEMES } from '@/ui/theme'
 /** Comptes de l'auteur. */
 const AUTHOR_URL = 'https://github.com/emireln'
 const GITHUB = 'https://github.com/emireln/bobby'
+const SUPPORT_URL = 'https://buymeacoffee.com/emireln'
 
 /**
  * « Cree par Emir Lima Neto » : le nom est un lien, donc la phrase se coupe autour de
@@ -158,6 +159,21 @@ function auClavier(event: KeyboardEvent, index: number) {
           stroke-linejoin="round"
         />
       </svg>
+    </a>
+
+    <!-- Soutien : Buy Me a Coffee avec micro-animation au survol -->
+    <a
+      class="group mt-2 flex items-center justify-between gap-2.5 rounded-xl border border-[#ffdd00]/40 bg-[#ffdd00]/10 px-3 py-2 text-sm font-medium text-[var(--ink)] transition duration-200 hover:border-[#ffdd00] hover:bg-[#ffdd00] hover:shadow-sm"
+      :href="SUPPORT_URL"
+      target="_blank"
+      rel="noopener noreferrer"
+      :aria-label="t('settings.support')"
+    >
+      <div class="flex items-center gap-2">
+        <span class="inline-block transition-transform duration-300 ease-out group-hover:scale-125 group-hover:-rotate-12" aria-hidden="true">☕</span>
+        <span>{{ t('settings.support') }}</span>
+      </div>
+      <span class="text-xs text-[var(--muted)] group-hover:text-[var(--ink)]">Buy Me a Coffee ↗</span>
     </a>
 
     <p class="mt-4 text-xs text-[var(--muted)]">

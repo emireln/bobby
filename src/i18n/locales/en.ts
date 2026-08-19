@@ -113,7 +113,8 @@ const en = {
     credits: 'Made with ❤️ by {name}',
     creditsAria: 'Emir Lima Neto on GitHub, in a new tab',
     github: 'View the project on GitHub',
-    githubAria: 'The project repository on GitHub, in a new tab'
+    githubAria: 'The project repository on GitHub, in a new tab',
+    support: 'Support the project'
   },
 
   states: {

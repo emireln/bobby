@@ -166,20 +166,6 @@ clip }`): things can float in the margins and be anchored to the window. Below i
   added _after_ the mix. **`setLook` refuses a non-finite target**: the engine keeps
   the last one, so a single `NaN` would settle in forever.
 
-## Where to read more
-
-|                                              |                                                                  |
-| -------------------------------------------- | ---------------------------------------------------------------- |
-| [docs/architecture.md](docs/architecture.md) | The engine, morphing, mask eyes, `Look`                          |
-| [docs/measurements.md](docs/measurements.md) | What was measured, the traps, regenerating `profiles.ts`         |
-| [docs/intro.md](docs/intro.md)               | The arrival sequence, and why it plays only `idle`               |
-| [docs/interface.md](docs/interface.md)       | Three-column scene, CSS traps, icons                             |
-| [docs/export.md](docs/export.md)             | The export bar, SVG/PNG/GIF/MP4, why the still export has no GIF |
-| [docs/i18n.md](docs/i18n.md)                 | The hand-rolled translation layer                                |
-
-The README is for people arriving at the repository: what the project is, how to
-run it, the component's API. Don't duplicate it here.
-
 ## Tests
 
 `pnpm test` runs in `node` by default. **One file asks for a DOM** and says so on its first
