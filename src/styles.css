@@ -70,7 +70,8 @@
   position: absolute;
   top: -2.5rem;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate3d(-50%, 0, 0);
+  will-change: transform;
   max-width: 260px;
   background-color: var(--paper);
   color: var(--ink);
@@ -536,6 +537,8 @@ body,
     filter: blur(50px);
     pointer-events: none;
     z-index: -1;
+    transform: translateZ(0);
+    will-change: transform;
   }
 
   .dark .avatar--geant::before {
@@ -547,6 +550,8 @@ body,
       transparent 75%
     );
     filter: blur(50px);
+    transform: translateZ(0);
+    will-change: transform;
   }
 
   .scene__gauche {

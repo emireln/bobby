@@ -196,12 +196,26 @@ let pointer: { x: number; y: number } | null = null
 let aiming = false
 /** Date d'horloge a laquelle le demi-tour a commence. */
 let turnSince = 0
+/** Cache du rectangle de l'avatar pour eviter le layout thrashing a chaque image */
+let cachedBox: DOMRect | null = null
+let lastBoxUpdate = 0
+
+function getAvatarBox(): DOMRect | null {
+  const now = performance.now()
+  if (!cachedBox || now - lastBoxUpdate > 150) {
+    cachedBox = svg.value?.getBoundingClientRect() ?? null
+    lastBoxUpdate = now
+  }
+  return cachedBox
+}
 
 function onPointerMove(event: PointerEvent) {
-  // Le tactile n'a pas de curseur qui traine : un doigt leve laisserait le
-  // regard fige sur le dernier point touche, ce qui se lit comme un bug.
   if (event.pointerType === 'touch') return
   pointer = { x: event.clientX, y: event.clientY }
+  if (svg.value) {
+    cachedBox = svg.value.getBoundingClientRect()
+    lastBoxUpdate = performance.now()
+  }
 }
 
 function onPointerLeave() {
@@ -210,40 +224,17 @@ function onPointerLeave() {
 
 function release() {
   if (!aiming) return
-  // meme duree qu'a l'aller : la tete revient pendant que la boule redescend
   engine.setLook(null, clock, TURN_TIME)
   aiming = false
 }
 
-/**
- * Vise le pointeur. Ne fait que la part DOM du travail — mesurer ou est la boule
- * et ou est le curseur — la regle de regard elle-meme etant dans `@/ui/gaze`.
- *
- * Le rectangle est relu a chaque image plutot que memorise : l'avatar glisse et
- * grandit pendant la transition de vue, un centre garde en cache ferait viser a
- * cote pendant tout le mouvement. La normalisation se fait sur la demi-fenetre et
- * non sur la taille de l'avatar : le regard doit saturer quand le curseur atteint
- * le bord de l'ecran, quelle que soit la place que la boule occupe.
- */
 function aim() {
-  // Le regard ne se pilote que sur les etats a VISAGE DE REPOS. Ailleurs la pose
-  // du regard EST l'animation relevee — l'orbite, par laquelle s'ouvre la vue,
-  // fait deja filer les yeux autour de la sphere — et s'y superposer la
-  // brouillerait.
   if (!STATE_BY_ID.get(state.value)?.baseFace) {
     release()
     return
   }
-  const box = svg.value?.getBoundingClientRect()
-  /*
-   * Une boite sans surface : il n'y a rien a viser, et surtout la normalisation
-   * ci-dessous deviendrait `0 / 0`, donc `NaN`. Or le moteur GARDE la derniere
-   * cible : un seul NaN pose une fois y reste pour toujours, et le bot ne se
-   * repose plus jamais. Ca arrive pour de vrai quand le volet du navigateur est
-   * masque — `getBoundingClientRect` rend alors des zeros.
-   */
+  const box = getAvatarBox()
   if (!box || box.width === 0 || box.height === 0) return
-  // le tour part a l'entree dans la vue, en meme temps que les anneaux
   if (!aiming) turnSince = clock
   const demiLargeur = Math.max(1, window.innerWidth / 2)
   const demiHauteur = Math.max(1, window.innerHeight / 2)
@@ -434,7 +425,8 @@ watch(
   () => props.follow && props.frozenAt === undefined,
   (on) => {
     if (on) {
-      window.addEventListener('pointermove', onPointerMove)
+      window.addEventListener('pointermove', onPointerMove, { passive: true })
+      window.addEventListener('resize', onResize, { passive: true })
       document.addEventListener('pointerleave', onPointerLeave)
       return
     }
@@ -444,19 +436,36 @@ watch(
   { immediate: true }
 )
 
+function onResize() {
+  cachedBox = null
+}
+
+function onVisibilityChange() {
+  if (document.hidden) {
+    cancelAnimationFrame(raf)
+    last = 0
+  } else if (props.frozenAt === undefined) {
+    last = 0
+    raf = requestAnimationFrame(tick)
+  }
+}
+
 function detach() {
   window.removeEventListener('pointermove', onPointerMove)
+  window.removeEventListener('resize', onResize)
   document.removeEventListener('pointerleave', onPointerLeave)
 }
 
 onMounted(() => {
+  document.addEventListener('visibilitychange', onVisibilityChange)
   if (props.frozenAt !== undefined) return
-  // le curseur peut arriver deja pose (URL, cycle relu du stockage)
   apply(block.value, elapsed.value)
   raf = requestAnimationFrame(tick)
 })
+
 onBeforeUnmount(() => {
   cancelAnimationFrame(raf)
+  document.removeEventListener('visibilitychange', onVisibilityChange)
   detach()
 })
 
@@ -488,6 +497,8 @@ function dotAttrs(dot: BotFrame['dots'][number]) {
     :width="props.size"
     :height="props.size"
     :viewBox="`${-VB} ${-VB} ${VB * 2} ${VB * 2}`"
+    class="select-none will-change-transform"
+    shape-rendering="geometricPrecision"
     role="img"
     :aria-label="t('app.botAria')"
   >
