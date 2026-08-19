@@ -4,7 +4,8 @@ import {
   profileFromPolygon,
   regularPolygonProfile,
   superellipseProfile,
-  unionOfCirclesProfile
+  unionOfCirclesProfile,
+  type Point
 } from './shape'
 
 /**
@@ -84,23 +85,31 @@ const droplet = normalize(
 /** Capsule couchee : enveloppe de deux disques cote a cote. */
 const capsule = profileFromPolygon(hullOfCircles(-0.42, 0, 0.62, 0.42, 0, 0.62), 0, 0)
 
-/** Coeur : deux lobes superieurs doux, taille pleine et pointe arrondie en bas. */
-const heart = normalize(
-  unionOfCirclesProfile([
-    { x: -0.30, y: -0.25, r: 0.50 },
-    { x: 0.30, y: -0.25, r: 0.50 },
-    { x: 0, y: -0.10, r: 0.65 },
-    { x: -0.16, y: 0.10, r: 0.52 },
-    { x: 0.16, y: 0.10, r: 0.52 },
-    { x: 0, y: 0.10, r: 0.58 },
-    { x: -0.08, y: 0.28, r: 0.44 },
-    { x: 0.08, y: 0.28, r: 0.44 },
-    { x: 0, y: 0.28, r: 0.48 },
-    { x: 0, y: 0.44, r: 0.36 },
-    { x: 0, y: 0.56, r: 0.24 }
-  ]),
-  1.05
-)
+/** Coeur : forme classique exacte (deux lobes semicirculaires, tangentes droites vers la pointe). */
+const heartPoly: Point[] = []
+heartPoly.push({ x: 0, y: -0.33 })
+// Lobe droit (du centre vers l'exterieur droit)
+for (let i = 0; i <= 32; i++) {
+  const a = Math.PI * 0.95 - (i / 32) * Math.PI * 1.15
+  heartPoly.push({
+    x: 0.35 + Math.cos(a) * 0.37,
+    y: -0.35 - Math.sin(a) * 0.37
+  })
+}
+// Flanc droit vers la pointe
+heartPoly.push({ x: 0, y: 0.64 })
+// Flanc gauche vers le lobe gauche
+heartPoly.push({ x: -0.66, y: -0.13 })
+// Lobe gauche (de l'exterieur gauche vers le centre)
+for (let i = 0; i <= 32; i++) {
+  const a = -Math.PI * 0.80 - (i / 32) * Math.PI * 1.15
+  heartPoly.push({
+    x: -0.35 + Math.cos(a) * 0.37,
+    y: -0.35 - Math.sin(a) * 0.37
+  })
+}
+
+const heart = normalize(profileFromPolygon(heartPoly, 0, 0), 1.05)
 
 /** Etoile : 5 branches doucement arrondies. */
 const star = normalize(
@@ -126,26 +135,34 @@ const flower = normalize(
   1.05
 )
 
-/** Bouclier : epaules douces en haut, flancs droits et ogive gothique continue vers la pointe. */
-const shield = normalize(
-  unionOfCirclesProfile([
-    { x: -0.32, y: -0.35, r: 0.50 },
-    { x: 0.32, y: -0.35, r: 0.50 },
-    { x: 0, y: -0.32, r: 0.62 },
-    { x: -0.30, y: -0.10, r: 0.52 },
-    { x: 0.30, y: -0.10, r: 0.52 },
-    { x: 0, y: -0.10, r: 0.62 },
-    { x: -0.22, y: 0.15, r: 0.50 },
-    { x: 0.22, y: 0.15, r: 0.50 },
-    { x: 0, y: 0.15, r: 0.56 },
-    { x: -0.12, y: 0.35, r: 0.42 },
-    { x: 0.12, y: 0.35, r: 0.42 },
-    { x: 0, y: 0.35, r: 0.46 },
-    { x: 0, y: 0.55, r: 0.32 },
-    { x: 0, y: 0.70, r: 0.18 }
-  ]),
-  1.05
-)
+/** Bouclier : epaules douces en haut, flancs droits, ogive gothique vers la pointe. */
+const shieldPoly: Point[] = []
+for (let i = 0; i <= 20; i++) {
+  const t = i / 20
+  shieldPoly.push({ x: -0.6 + t * 1.2, y: -0.56 - 0.04 * Math.sin(t * Math.PI) })
+}
+for (let i = 0; i <= 10; i++) {
+  const a = -Math.PI / 2 + (i / 10) * (Math.PI / 2)
+  shieldPoly.push({ x: 0.52 + Math.cos(a) * 0.14, y: -0.42 + Math.sin(a) * 0.14 })
+}
+shieldPoly.push({ x: 0.66, y: -0.05 })
+for (let i = 0; i <= 25; i++) {
+  const t = i / 25
+  const angle = (t * Math.PI) / 2
+  shieldPoly.push({ x: 0.66 * Math.cos(angle), y: -0.05 + 0.78 * Math.sin(angle) })
+}
+for (let i = 0; i <= 25; i++) {
+  const t = i / 25
+  const angle = ((1 - t) * Math.PI) / 2
+  shieldPoly.push({ x: -0.66 * Math.cos(angle), y: -0.05 + 0.78 * Math.sin(angle) })
+}
+shieldPoly.push({ x: -0.66, y: -0.05 })
+for (let i = 0; i <= 10; i++) {
+  const a = Math.PI + (i / 10) * (Math.PI / 2)
+  shieldPoly.push({ x: -0.52 + Math.cos(a) * 0.14, y: -0.42 + Math.sin(a) * 0.14 })
+}
+
+const shield = normalize(profileFromPolygon(shieldPoly, 0, 0), 1.05)
 
 export const SHAPES: BotShape[] = [
   { id: 'cercle', radii: new Array(PROFILE_SAMPLES).fill(1) },
