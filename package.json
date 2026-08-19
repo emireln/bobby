@@ -1,7 +1,7 @@
 {
   "name": "bobby",
   "private": true,
-  "version": "0.1.14",
+  "version": "0.1.15",
   "type": "module",
   "description": "bobby — animated SVG avatar recreation with customizable shapes, expressions, and colors.",
   "license": "MIT",

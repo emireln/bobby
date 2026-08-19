@@ -25,12 +25,11 @@ Vue 3, Vite, TypeScript, Tailwind 4.
 ## What's in it
 
 The rail switches between three views:
-- **Customise**: 16 body shapes, 24 colours and 24 rest expressions, persisted between visits.
-- **Animations**: arranged timeline editor to sequence states, durations, and cycles.
-- **Settings**: language (English or Portuguese), theme (System / Light / Dark), and author credits.
+- **Customise**: 16 body shapes, 24 colours, 24 expressions, and customizable animated speech bubble with live character limit.
+- **Animations**: 18 animation states (including `idle`, `bounce`, `pulse`, `spin`, `wave`, `orbit`, `burst`, `comet`, etc.) with a timeline editor to arrange states, durations, and cycles.
+- **Settings**: language switcher (English 🇺🇸 / Portuguese 🇧🇷), theme switcher (System / Light / Dark), dynamic ambient glow preview, and project support.
 
-Anything on screen can be exported: the avatar as SVG, PNG or an animated GIF, and
-a whole timeline as GIF or MP4.
+Anything on screen can be exported: the avatar as SVG, PNG, animated SVG, or animated GIF, and full timelines as GIF or MP4 video.
 
 ## Using the component
 
