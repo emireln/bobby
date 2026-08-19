@@ -162,6 +162,10 @@ export type StateId =
   | 'orbit'
   | 'burst'
   | 'comet'
+  | 'bounce'
+  | 'pulse'
+  | 'spin'
+  | 'wave'
   /** transition d'interface, pas une animation du catalogue : hors `SEQUENCE` */
   | 'swirl'
 
@@ -569,6 +573,134 @@ export const STATES: StateDef[] = [
         arcs: COMET_RIBBONS.map((s, i) => ({ id: `cm${i}`, seed: s, t, opacity: fade }))
       })
     }
+  },
+
+  {
+    id: 'bounce',
+    duration: 1.8,
+    minDuration: 1.6,
+    morph: 0.35,
+    baseFace: false,
+    baseBody: false,
+    blinkIn: false,
+    pose: (t) => {
+      let offY = 0
+      let sx = 1
+      let sy = 1
+      let gazeY = 0
+
+      if (t < 0.3) {
+        const p = easings.easeOutCubic(t / 0.3)
+        offY = p * 0.12
+        sx = 1 + p * 0.16
+        sy = 1 - p * 0.16
+        gazeY = p * 0.15
+      } else if (t < 0.75) {
+        const p = (t - 0.3) / 0.45
+        const jumpCurve = Math.sin(p * Math.PI)
+        offY = -jumpCurve * 0.38
+        sx = 1 - jumpCurve * 0.12
+        sy = 1 + jumpCurve * 0.22
+        gazeY = -jumpCurve * 0.35
+      } else if (t < 1.2) {
+        const p = (t - 0.75) / 0.45
+        const landCurve = Math.sin(p * Math.PI)
+        offY = landCurve * 0.1
+        sx = 1 + landCurve * 0.15
+        sy = 1 - landCurve * 0.15
+        gazeY = landCurve * 0.1
+      }
+
+      return base({
+        sil: circle(1, { sx, sy }),
+        offY,
+        gaze: { ...REST_GAZE, pitch: REST_GAZE.pitch + gazeY * 30 }
+      })
+    }
+  },
+
+  {
+    id: 'pulse',
+    duration: 2.0,
+    minDuration: 1.8,
+    morph: 0.3,
+    baseFace: false,
+    baseBody: false,
+    blinkIn: false,
+    pose: (t) => {
+      let scale = 1
+      if (t > 0.15 && t < 0.55) {
+        const p = Math.sin(((t - 0.15) / 0.4) * Math.PI)
+        scale = 1 + p * 0.14
+      } else if (t >= 0.55 && t < 1.05) {
+        const p = Math.sin(((t - 0.55) / 0.5) * Math.PI)
+        scale = 1 + p * 0.18
+      }
+      return base({
+        sil: circle(scale),
+        dots: t > 0.4 ? particles(t - 0.4, 0.6) : []
+      })
+    }
+  },
+
+  {
+    id: 'spin',
+    duration: 1.8,
+    minDuration: 1.6,
+    morph: 0.35,
+    baseFace: false,
+    baseBody: false,
+    blinkIn: false,
+    pose: (t) => {
+      let sx = 1
+      let gazeX = 0
+      if (t < 1.3) {
+        const p = t / 1.3
+        const spinPhase = Math.sin(p * Math.PI * 2)
+        sx = 1 - Math.abs(Math.sin(p * Math.PI)) * 0.7
+        gazeX = spinPhase * 0.8
+      }
+      const fade = clamp((t - 0.1) / 0.2) * clamp((1.3 - t) / 0.3)
+      return base({
+        sil: circle(1, { sx }),
+        gaze: { ...REST_GAZE, yaw: REST_GAZE.yaw + gazeX * 40 },
+        arcs: RINGS.slice(0, 2).map((s, i) => ({ id: `sp${i}`, seed: s, t, opacity: fade }))
+      })
+    }
+  },
+
+  {
+    id: 'wave',
+    duration: 2.0,
+    minDuration: 1.8,
+    morph: 0.35,
+    baseFace: false,
+    baseBody: false,
+    blinkIn: false,
+    pose: (t) => {
+      const amp = 0.12 * Math.exp(-t * 1.2)
+      const sway = Math.sin(t * 6) * amp
+      const waveRadii = Array.from({ length: 120 }, (_, i) => {
+        const angle = (i / 120) * TAU
+        return 1 + amp * Math.sin(3 * angle + t * 8)
+      })
+      return base({
+        sil: {
+          radii: waveRadii,
+          rot: 0,
+          cx: sway * 0.5,
+          cy: 0,
+          sx: 1,
+          sy: 1
+        },
+        offX: sway,
+        gaze: { ...REST_GAZE, yaw: REST_GAZE.yaw + sway * 30, roll: REST_GAZE.roll + sway * 25 },
+        eyes: [
+          { w: EYE_W, h: EYE_H, open: 1, tilt: -sway * 40 },
+          { w: EYE_W, h: EYE_H, open: 1, tilt: -sway * 40 }
+        ]
+      })
+    }
   }
 ]
 
@@ -595,7 +727,11 @@ export const POSES: Record<StateId, number> = {
   orbit: 1.2,
   swirl: 0.5,
   burst: 0.45,
-  comet: 1.15
+  comet: 1.15,
+  bounce: 0.5,
+  pulse: 0.8,
+  spin: 0.65,
+  wave: 0.4
 }
 
 export const SEQUENCE: StateId[] = [
@@ -612,5 +748,9 @@ export const SEQUENCE: StateId[] = [
   'play',
   'orbit',
   'burst',
-  'comet'
+  'comet',
+  'bounce',
+  'pulse',
+  'spin',
+  'wave'
 ]

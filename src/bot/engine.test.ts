@@ -192,9 +192,9 @@ describe('etats', () => {
    * transition d'interface, choisie et non mesuree — il ne doit donc jamais
    * apparaitre dans le catalogue, et le rester est precisement ce qu'on verifie.
    */
-  it('garde les 14 etats de la video dans la sequence, et rien d autre', () => {
-    expect(SEQUENCE).toHaveLength(14)
-    expect(new Set(SEQUENCE).size).toBe(14)
+  it('garde tous les etats du catalogue dans la sequence, et rien d autre', () => {
+    expect(SEQUENCE).toHaveLength(18)
+    expect(new Set(SEQUENCE).size).toBe(18)
     for (const id of SEQUENCE) expect(STATES.some((s) => s.id === id), id).toBe(true)
   })
 

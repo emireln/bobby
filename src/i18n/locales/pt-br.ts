@@ -137,7 +137,11 @@ const ptBr: typeof en = {
     orbit: 'Órbita',
     burst: 'Explosão',
     comet: 'Cometa',
-    swirl: 'Giro'
+    swirl: 'Giro',
+    bounce: 'Pulo',
+    pulse: 'Pulso',
+    spin: 'Rodopio',
+    wave: 'Onda'
   },
 
   shapes: {

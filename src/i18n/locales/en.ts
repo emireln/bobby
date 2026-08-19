@@ -135,7 +135,11 @@ const en = {
     orbit: 'Orbit',
     burst: 'Burst',
     comet: 'Comet',
-    swirl: 'Swirl'
+    swirl: 'Swirl',
+    bounce: 'Bounce',
+    pulse: 'Pulse',
+    spin: 'Spin',
+    wave: 'Wave'
   },
 
   shapes: {
