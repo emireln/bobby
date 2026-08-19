@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import {
+  AnimateIcon,
   ArchiveAnimated,
   ClapperboardAnimated,
   PaintbrushAnimated,
@@ -47,30 +48,32 @@ const muted = ref<ViewId | null>(null)
           @pointerdown="muted = item.id"
           @click="view = item.id"
         >
-          <ClapperboardAnimated
-            v-if="item.id === 'animations'"
-            :size="20"
-            :stroke-width="2"
-            class="transition-transform"
-          />
-          <ArchiveAnimated
-            v-else-if="item.id === 'coffre'"
-            :size="20"
-            :stroke-width="2"
-            class="transition-transform"
-          />
-          <SettingsAnimated
-            v-else-if="item.id === 'reglages'"
-            :size="20"
-            :stroke-width="2"
-            class="transition-transform"
-          />
-          <PaintbrushAnimated
-            v-else
-            :size="20"
-            :stroke-width="2"
-            class="transition-transform"
-          />
+          <AnimateIcon
+            :animate-on-hover="true"
+            as="span"
+            class="flex items-center justify-center pointer-events-none"
+          >
+            <ClapperboardAnimated
+              v-if="item.id === 'animations'"
+              :size="20"
+              :stroke-width="2"
+            />
+            <ArchiveAnimated
+              v-else-if="item.id === 'coffre'"
+              :size="20"
+              :stroke-width="2"
+            />
+            <SettingsAnimated
+              v-else-if="item.id === 'reglages'"
+              :size="20"
+              :stroke-width="2"
+            />
+            <PaintbrushAnimated
+              v-else
+              :size="20"
+              :stroke-width="2"
+            />
+          </AnimateIcon>
         </button>
 
         <!-- Tooltip -->
