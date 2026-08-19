@@ -42,7 +42,15 @@ const en = {
     import_success: 'Avatars imported!',
     import_error: 'Invalid JSON vault file',
     delete: 'Delete avatar',
-    load: 'Load avatar'
+    load: 'Load avatar',
+    rename: 'Rename avatar',
+    move_left: 'Move left',
+    move_right: 'Move right',
+    update_current: 'Update with current look',
+    clear_all: 'Clear vault',
+    clear_confirm: 'Clear all saved avatars in vault?',
+    sort_name: 'Sort A-Z',
+    sort_date: 'Sort by recent'
   },
 
   export: {

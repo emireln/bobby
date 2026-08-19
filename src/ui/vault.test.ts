@@ -1,9 +1,12 @@
 // @vitest-environment happy-dom
 import { beforeEach, describe, expect, it } from 'vitest'
 import {
+  clearVault,
   loadVault,
   parseVaultImport,
   removeFromVault,
+  renameInVault,
+  reorderVault,
   saveToVault
 } from './vault'
 
@@ -66,14 +69,43 @@ describe('Avatar Vault', () => {
         }
       ]
     })
-
     const parsed = parseVaultImport(raw)
     expect(parsed).toHaveLength(1)
     expect(parsed[0]?.name).toBe('Imported Bot')
-    // fallback to valid default shape
     expect(parsed[0]?.shape).toBe('nuage')
     expect(parsed[0]?.color).toBe('ciel')
     expect(parsed[0]?.expression).toBe('curieux')
     expect(parsed[0]?.bubble).toBe('Nice!')
+  })
+
+  it('renames an avatar', () => {
+    const { avatar } = saveToVault({
+      name: 'Original',
+      shape: 'cercle',
+      color: 'encre',
+      expression: 'neutre'
+    })
+    renameInVault(avatar.id, 'Renamed Bobby')
+    expect(loadVault()[0]?.name).toBe('Renamed Bobby')
+  })
+
+  it('reorders avatars in vault', () => {
+    saveToVault({ name: 'First', shape: 'cercle', color: 'encre', expression: 'neutre' })
+    saveToVault({ name: 'Second', shape: 'cercle', color: 'encre', expression: 'neutre' })
+    // In LIFO save, 'Second' is index 0, 'First' is index 1
+    expect(loadVault()[0]?.name).toBe('Second')
+    expect(loadVault()[1]?.name).toBe('First')
+
+    reorderVault(0, 1)
+    expect(loadVault()[0]?.name).toBe('First')
+    expect(loadVault()[1]?.name).toBe('Second')
+  })
+
+  it('clears all avatars', () => {
+    saveToVault({ name: 'A', shape: 'cercle', color: 'encre', expression: 'neutre' })
+    saveToVault({ name: 'B', shape: 'cercle', color: 'encre', expression: 'neutre' })
+    expect(loadVault()).toHaveLength(2)
+    clearVault()
+    expect(loadVault()).toHaveLength(0)
   })
 })

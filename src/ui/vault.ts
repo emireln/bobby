@@ -68,6 +68,59 @@ export function removeFromVault(id: string, currentVault: SavedAvatar[] = loadVa
   return updated
 }
 
+/** Renomme un avatar du coffre. */
+export function renameInVault(
+  id: string,
+  newName: string,
+  currentVault: SavedAvatar[] = loadVault()
+): SavedAvatar[] {
+  const name = newName.trim().slice(0, 30) || 'Bobby'
+  const updated = currentVault.map((a) => (a.id === id ? { ...a, name } : a))
+  persistVault(updated)
+  return updated
+}
+
+/** Deplace un avatar dans le coffre (reorganisation). */
+export function reorderVault(
+  fromIndex: number,
+  toIndex: number,
+  currentVault: SavedAvatar[] = loadVault()
+): SavedAvatar[] {
+  if (
+    fromIndex < 0 ||
+    fromIndex >= currentVault.length ||
+    toIndex < 0 ||
+    toIndex >= currentVault.length ||
+    fromIndex === toIndex
+  ) {
+    return currentVault
+  }
+  const updated = [...currentVault]
+  const [moved] = updated.splice(fromIndex, 1)
+  if (moved) {
+    updated.splice(toIndex, 0, moved)
+    persistVault(updated)
+  }
+  return updated
+}
+
+/** Met a jour un avatar existant avec de nouveaux attributs. */
+export function updateInVault(
+  id: string,
+  data: Partial<Omit<SavedAvatar, 'id' | 'createdAt'>>,
+  currentVault: SavedAvatar[] = loadVault()
+): SavedAvatar[] {
+  const updated = currentVault.map((a) => (a.id === id ? { ...a, ...data } : a))
+  persistVault(updated)
+  return updated
+}
+
+/** Vide le coffre. */
+export function clearVault(): SavedAvatar[] {
+  persistVault([])
+  return []
+}
+
 /** Exporte le coffre complet sous forme de fichier JSON telechargeable. */
 export function exportVaultJson(vault: SavedAvatar[]): void {
   const data = JSON.stringify({ version: 1, bobby: 'vault', avatars: vault }, null, 2)

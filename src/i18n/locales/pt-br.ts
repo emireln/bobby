@@ -44,7 +44,15 @@ const ptBr: typeof en = {
     import_success: 'Avatares importados!',
     import_error: 'Arquivo JSON inválido',
     delete: 'Excluir avatar',
-    load: 'Carregar avatar'
+    load: 'Carregar avatar',
+    rename: 'Renomear avatar',
+    move_left: 'Mover para esquerda',
+    move_right: 'Mover para direita',
+    update_current: 'Atualizar com visual atual',
+    clear_all: 'Limpar cofre',
+    clear_confirm: 'Limpar todos os avatares salvos no cofre?',
+    sort_name: 'Ordenar A-Z',
+    sort_date: 'Ordenar por recente'
   },
 
   export: {
