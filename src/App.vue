@@ -941,7 +941,7 @@ watch(
 
       <aside
         v-if="!preview"
-        class="panneau scene__droite w-full lg:w-96 lg:shrink-0"
+        class="panneau scene__droite w-full px-3.5 py-2 lg:w-[26rem] lg:shrink-0 lg:px-5 lg:py-3"
         :class="droite ? 'panneau--ouvert max-lg:order-2' : 'max-lg:hidden'"
       >
         <!-- animations -->

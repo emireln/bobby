@@ -394,7 +394,7 @@ body,
 
   .scene {
     display: grid;
-    grid-template-columns: 0 minmax(0, 1fr) 24rem;
+    grid-template-columns: 0 minmax(0, 1fr) 26rem;
     column-gap: 2.5rem;
     transition: grid-template-columns var(--bascule);
     /*
@@ -523,8 +523,23 @@ body,
      */
     overflow-x: hidden;
     overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--line) transparent;
     opacity: 0;
     transition: opacity 0.3s ease-out;
+  }
+
+  .panneau::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .panneau::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .panneau::-webkit-scrollbar-thumb {
+    background-color: var(--line);
+    border-radius: 9999px;
   }
 
   .panneau--ouvert {
