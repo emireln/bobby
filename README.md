@@ -28,7 +28,7 @@ only gate, so run `pnpm build` before you call something done.
 The rail on the left switches between three views. **Customise** offers 16 body
 shapes, 24 colours and 24 rest expressions, kept between visits. **Animations** is
 a small editor: arrange states into a timeline, set how long each is held, save the
-result. **Settings** holds the language (French, English or Chinese) and the
+result. **Settings** holds the language (English or Portuguese) and the
 credits.
 
 Anything on screen can be exported: the avatar as SVG, PNG or an animated GIF, and
