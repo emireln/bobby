@@ -85,28 +85,31 @@ const droplet = normalize(
 /** Capsule couchee : enveloppe de deux disques cote a cote. */
 const capsule = profileFromPolygon(hullOfCircles(-0.42, 0, 0.62, 0.42, 0, 0.62), 0, 0)
 
-/** Coeur : forme classique exacte (deux lobes semicirculaires, tangentes droites vers la pointe). */
+/** Coeur : forme classique exacte et lisse (courbures C1 continues aux lobes, tangentes et pointe). */
 const heartPoly: Point[] = []
-heartPoly.push({ x: 0, y: -0.33 })
-// Lobe droit (du centre vers l'exterieur droit)
+const hx0 = 0.32, hy0 = -0.30, hR = 0.38, hyt = 0.54, hrt = 0.08
+const hD = Math.hypot(-hx0, hyt - hy0)
+const hpsi = Math.atan2(hyt - hy0, -hx0)
+const halpha = Math.asin((hR - hrt) / hD)
+const haTan = hpsi - Math.PI / 2 + halpha
+const haCleftR = -Math.acos(-hx0 / hR)
+const haCleftL = Math.PI * 2 - Math.acos(hx0 / hR)
+
+// 1. Lobe droit : du creux central vers la tangente exterieure
 for (let i = 0; i <= 32; i++) {
-  const a = Math.PI * 0.95 - (i / 32) * Math.PI * 1.15
-  heartPoly.push({
-    x: 0.35 + Math.cos(a) * 0.37,
-    y: -0.35 - Math.sin(a) * 0.37
-  })
+  const a = haCleftR + (i / 32) * (haTan - haCleftR)
+  heartPoly.push({ x: hx0 + hR * Math.cos(a), y: hy0 + hR * Math.sin(a) })
 }
-// Flanc droit vers la pointe
-heartPoly.push({ x: 0, y: 0.64 })
-// Flanc gauche vers le lobe gauche
-heartPoly.push({ x: -0.66, y: -0.13 })
-// Lobe gauche (de l'exterieur gauche vers le centre)
+// 2. Pointe arrondie en bas : arc tangent doux
+for (let i = 0; i <= 16; i++) {
+  const a = haTan + (i / 16) * (Math.PI - 2 * haTan)
+  heartPoly.push({ x: hrt * Math.cos(a), y: hyt + hrt * Math.sin(a) })
+}
+// 3. Lobe gauche : de la tangente exterieure vers le creux central
+const haTanL = Math.PI - haTan
 for (let i = 0; i <= 32; i++) {
-  const a = -Math.PI * 0.80 - (i / 32) * Math.PI * 1.15
-  heartPoly.push({
-    x: -0.35 + Math.cos(a) * 0.37,
-    y: -0.35 - Math.sin(a) * 0.37
-  })
+  const a = haTanL + (i / 32) * (haCleftL - haTanL)
+  heartPoly.push({ x: -hx0 + hR * Math.cos(a), y: hy0 + hR * Math.sin(a) })
 }
 
 const heart = normalize(profileFromPolygon(heartPoly, 0, 0), 1.05)
