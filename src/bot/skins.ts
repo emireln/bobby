@@ -48,7 +48,7 @@ export interface BotShape {
 }
 
 /** Ramene le rayon maximal a `max` pour que toutes les formes pesent pareil a l'oeil. */
-function normalize(radii: number[], max = 1): number[] {
+export function normalize(radii: number[], max = 1): number[] {
   const peak = Math.max(...radii)
   if (peak <= 0) return radii
   const k = max / peak
@@ -84,14 +84,14 @@ const droplet = normalize(
 /** Capsule couchee : enveloppe de deux disques cote a cote. */
 const capsule = profileFromPolygon(hullOfCircles(-0.42, 0, 0.62, 0.42, 0, 0.62), 0, 0)
 
-/** Coeur : deux lobes superieurs, base arrondie etroite. */
+/** Coeur : deux lobes superieurs bien dessines, corps plein et pointe douce en bas. */
 const heart = normalize(
   unionOfCirclesProfile([
-    { x: -0.34, y: -0.16, r: 0.52 },
-    { x: 0.34, y: -0.16, r: 0.52 },
-    { x: 0, y: -0.1, r: 0.56 },
-    { x: 0, y: 0.22, r: 0.6 },
-    { x: 0, y: 0.48, r: 0.38 }
+    { x: -0.34, y: -0.24, r: 0.52 },
+    { x: 0.34, y: -0.24, r: 0.52 },
+    { x: 0, y: -0.05, r: 0.58 },
+    { x: 0, y: 0.28, r: 0.56 },
+    { x: 0, y: 0.56, r: 0.36 }
   ]),
   1.05
 )

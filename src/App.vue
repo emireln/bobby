@@ -443,10 +443,12 @@ const color = ref(stored('couleur', DEFAULT_COLOR, (v) => COLOR_BY_ID.has(v)))
 const expression = ref(
   stored('expression', DEFAULT_EXPRESSION, (v) => EXPRESSION_BY_ID.has(v))
 )
+const bubble = ref(lis('bulle') ?? '')
 
 watch(shape, (v) => ecris('forme', v))
 watch(color, (v) => ecris('couleur', v))
 watch(expression, (v) => ecris('expression', v))
+watch(bubble, (v) => ecris('bulle', v))
 
 /**
  * Nom du produit, en capitales pour le grand mot du pied de page. PAS traduit —
@@ -876,7 +878,7 @@ watch(
              barre de montage lui prend assez de place pour qu'un carre de 460
              deborde et fasse defiler la page -->
         <div
-          class="avatar flex aspect-square w-full items-center justify-center"
+          class="avatar relative flex aspect-square w-full items-center justify-center"
           :class="[
             view === 'animations' && !preview
               ? 'max-w-[min(460px,calc(100dvh_-_var(--timeline)_-_7rem))]'
@@ -885,6 +887,16 @@ watch(
             view === 'reglages' && !preview && 'avatar--geant'
           ]"
         >
+          <!-- Bulle de dialogue personnalisee et animee -->
+          <div
+            v-if="bubble.trim() && view !== 'reglages' && !nue"
+            class="bulle-chat"
+            aria-live="polite"
+          >
+            <span>{{ bubble }}</span>
+            <div class="bulle-chat__queue"></div>
+          </div>
+
           <BobbyBot
             ref="bot"
             class="h-auto max-w-full"
@@ -997,6 +1009,7 @@ watch(
             v-model:shape="shape"
             v-model:color="color"
             v-model:expression="expression"
+            v-model:bubble="bubble"
           />
         </template>
       </aside>

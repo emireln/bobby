@@ -23,11 +23,14 @@ const ptBr: typeof en = {
   },
 
   panel: {
-    animations: 'Animação',
+    animations: 'Animações',
     shape: 'Forma',
     expression: 'Expressão',
     color: 'Cor',
-    randomize: 'Aleatório'
+    randomize: 'Aleatório',
+    bubble: 'Balão de fala',
+    bubble_placeholder: 'Diga algo...',
+    bubble_clear: 'Limpar balão'
   },
 
   export: {

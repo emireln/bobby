@@ -25,7 +25,10 @@ const en = {
     shape: 'Shape',
     expression: 'Expression',
     color: 'Colour',
-    randomize: 'Randomize'
+    randomize: 'Randomize',
+    bubble: 'Speech bubble',
+    bubble_placeholder: 'Say something...',
+    bubble_clear: 'Clear bubble'
   },
 
   export: {

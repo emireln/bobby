@@ -7,6 +7,7 @@ import { t } from '@/i18n'
 const shape = defineModel<string>('shape', { required: true })
 const color = defineModel<string>('color', { required: true })
 const expression = defineModel<string>('expression', { required: true })
+const bubble = defineModel<string>('bubble', { default: '' })
 
 /**
  * Les vignettes sont figees a la meme date que la pose de repos : elles montrent
@@ -90,6 +91,30 @@ function randomize() {
           class="block h-[78%] w-[78%] rounded-full ring-1 ring-black/10 ring-inset"
           :style="{ background: c.hex }"
         />
+      </button>
+    </div>
+
+    <div class="mt-5 flex items-center justify-between">
+      <h2 class="text-sm font-semibold">{{ t('panel.bubble') }}</h2>
+      <span class="text-xs text-[var(--muted)]">{{ bubble.length }}/40</span>
+    </div>
+    <div class="mt-2 flex items-center gap-1.5 rounded-xl border border-[var(--line)] bg-[var(--paper)] px-3 py-1.5 transition focus-within:border-[var(--ink)]">
+      <input
+        v-model="bubble"
+        type="text"
+        maxlength="40"
+        :placeholder="t('panel.bubble_placeholder')"
+        class="w-full bg-transparent text-sm text-[var(--ink)] outline-none placeholder:text-[var(--muted)]"
+      />
+      <button
+        v-if="bubble"
+        type="button"
+        class="cursor-pointer text-xs text-[var(--muted)] hover:text-[var(--ink)]"
+        :title="t('panel.bubble_clear')"
+        :aria-label="t('panel.bubble_clear')"
+        @click="bubble = ''"
+      >
+        ✕
       </button>
     </div>
   </div>
