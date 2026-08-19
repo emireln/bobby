@@ -224,9 +224,9 @@ body,
   padding-right: 0.1em;
   background: linear-gradient(
     180deg,
-    rgb(10 10 12 / 0.18) 0%,
-    rgb(10 10 12 / 0.08) 48%,
-    rgb(10 10 12 / 0) 88%
+    rgba(0, 0, 0, 0.16) 0%,
+    rgba(0, 0, 0, 0.06) 48%,
+    rgba(0, 0, 0, 0) 88%
   );
   -webkit-background-clip: text;
   background-clip: text;

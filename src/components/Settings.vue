@@ -205,7 +205,24 @@ function auClavier(event: KeyboardEvent, index: number) {
       rel="noopener noreferrer"
       :aria-label="t('settings.support')"
     >
-      <span class="inline-block text-base transition-transform duration-300 ease-out group-hover:scale-125 group-hover:-rotate-12" aria-hidden="true">☕</span>
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="shrink-0 transition-transform duration-300 ease-out group-hover:scale-125 group-hover:-rotate-12"
+        aria-hidden="true"
+      >
+        <path d="M17 8h1a4 4 0 1 1 0 8h-1" />
+        <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z" />
+        <line x1="6" y1="2" x2="6" y2="4" />
+        <line x1="10" y1="2" x2="10" y2="4" />
+        <line x1="14" y1="2" x2="14" y2="4" />
+      </svg>
       <span class="flex-1">{{ t('settings.support') }}</span>
       <svg
         width="11"
