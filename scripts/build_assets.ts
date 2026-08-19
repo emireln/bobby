@@ -16,19 +16,7 @@ const buildDir = path.resolve(import.meta.dirname, '../build')
 fs.mkdirSync(publicDir, { recursive: true })
 fs.mkdirSync(buildDir, { recursive: true })
 
-// 1. Transparent Cloud SVG (Pure vector silhouette with eyes cut out)
-const cloudTransparentSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-110 -110 220 220" width="512" height="512">
-  <defs>
-    <mask id="eyes">
-      <rect x="-110" y="-110" width="220" height="220" fill="#fff" />
-      <path d="${frame.eyes[0].d}" transform="${frame.eyes[0].matrix}" fill="#000" />
-      <path d="${frame.eyes[1].d}" transform="${frame.eyes[1].matrix}" fill="#000" />
-    </mask>
-  </defs>
-  <path d="${frame.bodyPath}" fill="#ffffff" mask="url(#eyes)" />
-</svg>`
-
-// 2. Favicon SVG
+// 1. Favicon & App Icon SVG (with rounded dark squircle background #09090b)
 const faviconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-118 -118 236 236">
   <defs>
     <mask id="eyes">
@@ -42,7 +30,7 @@ const faviconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-118 -118 2
 </svg>`
 fs.writeFileSync(path.join(publicDir, 'favicon.svg'), faviconSvg, 'utf8')
 
-// 3. Ultra-Minimalist Banner SVG (1200x630)
+// 2. Ultra-Minimalist Banner SVG (1200x630)
 const bannerSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
   <rect width="1200" height="630" fill="#09090b" />
   <g transform="translate(600, 240) scale(0.9)">
@@ -59,10 +47,10 @@ const bannerSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630
   <text x="600" y="485" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="20" font-weight="400" fill="#71717a" letter-spacing="-0.5">Pure SVG animated avatar &amp; timeline studio</text>
 </svg>`
 
-// 4. NSIS Sidebar SVG (164x314) - Matte dark background with centered white cloud, no text
-const nsisSidebarSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 164 314" width="164" height="314">
-  <rect width="164" height="314" fill="#09090b" />
-  <g transform="translate(82, 157) scale(0.55)">
+// 3. High-Definition NSIS Sidebar SVG (164x314 aspect ratio, rendered at 4x resolution for crystal clarity)
+const nsisSidebarSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 656 1256" width="656" height="1256">
+  <rect width="656" height="1256" fill="#09090b" />
+  <g transform="translate(328, 628) scale(2.2)">
     <defs>
       <mask id="nsis-eyes">
         <rect x="-110" y="-110" width="220" height="220" fill="#fff" />
@@ -71,21 +59,6 @@ const nsisSidebarSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 164
       </mask>
     </defs>
     <path d="${frame.bodyPath}" fill="#ffffff" mask="url(#nsis-eyes)" />
-  </g>
-</svg>`
-
-// 5. NSIS Header SVG (150x57)
-const nsisHeaderSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 57" width="150" height="57">
-  <rect width="150" height="57" fill="#09090b" />
-  <g transform="translate(115, 28.5) scale(0.24)">
-    <defs>
-      <mask id="header-eyes">
-        <rect x="-110" y="-110" width="220" height="220" fill="#fff" />
-        <path d="${frame.eyes[0].d}" transform="${frame.eyes[0].matrix}" fill="#000" />
-        <path d="${frame.eyes[1].d}" transform="${frame.eyes[1].matrix}" fill="#000" />
-      </mask>
-    </defs>
-    <path d="${frame.bodyPath}" fill="#ffffff" mask="url(#header-eyes)" />
   </g>
 </svg>`
 
@@ -189,18 +162,18 @@ async function main() {
     .png()
     .toFile(path.join(publicDir, 'banner.png'))
 
-  // 3. Desktop App Logo (512x512 transparent PNG)
-  const icon512Png = await sharp(Buffer.from(cloudTransparentSvg))
+  // 3. Desktop App Logo (512x512 PNG with rounded black squircle background)
+  const icon512Png = await sharp(Buffer.from(faviconSvg))
     .resize(512, 512)
     .png()
     .toBuffer()
   fs.writeFileSync(path.join(buildDir, 'icon.png'), icon512Png)
 
-  // 4. Multi-resolution ICOs (256, 48, 32, 16) with transparent background
-  const icon256Png = await sharp(Buffer.from(cloudTransparentSvg)).resize(256, 256).png().toBuffer()
-  const icon48Png = await sharp(Buffer.from(cloudTransparentSvg)).resize(48, 48).png().toBuffer()
-  const icon32Png = await sharp(Buffer.from(cloudTransparentSvg)).resize(32, 32).png().toBuffer()
-  const icon16Png = await sharp(Buffer.from(cloudTransparentSvg)).resize(16, 16).png().toBuffer()
+  // 4. Multi-resolution ICOs (256, 48, 32, 16) with rounded black squircle background
+  const icon256Png = await sharp(Buffer.from(faviconSvg)).resize(256, 256).png().toBuffer()
+  const icon48Png = await sharp(Buffer.from(faviconSvg)).resize(48, 48).png().toBuffer()
+  const icon32Png = await sharp(Buffer.from(faviconSvg)).resize(32, 32).png().toBuffer()
+  const icon16Png = await sharp(Buffer.from(faviconSvg)).resize(16, 16).png().toBuffer()
 
   const fullIco = createIco([
     { size: 256, buffer: icon256Png },
@@ -212,32 +185,30 @@ async function main() {
   fs.writeFileSync(path.join(buildDir, 'icon.ico'), fullIco)
   fs.writeFileSync(path.join(publicDir, 'favicon.ico'), fullIco)
 
-  // 5. NSIS Installer Bitmaps (24-bit BMP)
+  // 5. Enhanced High-Quality NSIS Installer Sidebar Bitmap (164x314, 24-bit uncompressed BMP)
+  // Super-sampled from 656x1256 to 164x314 for crystal sharp antialiased edges
   const sidebarRgb = await sharp(Buffer.from(nsisSidebarSvg))
-    .resize(164, 314)
+    .resize(164, 314, { kernel: 'lanczos3' })
     .removeAlpha()
     .raw()
     .toBuffer()
   const sidebarBmp = rawRgbTo24BitBmp(sidebarRgb, 164, 314)
   fs.writeFileSync(path.join(buildDir, 'installerSidebar.bmp'), sidebarBmp)
 
-  const headerRgb = await sharp(Buffer.from(nsisHeaderSvg))
-    .resize(150, 57)
-    .removeAlpha()
-    .raw()
-    .toBuffer()
-  const headerBmp = rawRgbTo24BitBmp(headerRgb, 150, 57)
-  fs.writeFileSync(path.join(buildDir, 'installerHeader.bmp'), headerBmp)
+  // Clean up unused installerHeader.bmp if present
+  const oldHeader = path.join(buildDir, 'installerHeader.bmp')
+  if (fs.existsSync(oldHeader)) {
+    fs.unlinkSync(oldHeader)
+  }
 
   console.log('Successfully generated:')
   console.log(' - public/favicon.svg')
-  console.log(' - public/favicon.ico (transparent tray/web icon)')
+  console.log(' - public/favicon.ico (rounded dark square icon)')
   console.log(' - public/apple-touch-icon.png')
   console.log(' - public/banner.png')
-  console.log(' - build/icon.png (512x512 transparent app icon)')
-  console.log(' - build/icon.ico (transparent multi-size app icon)')
-  console.log(' - build/installerSidebar.bmp (164x314 NSIS banner with logo, no text)')
-  console.log(' - build/installerHeader.bmp (150x57 NSIS header)')
+  console.log(' - build/icon.png (512x512 app icon with rounded dark square)')
+  console.log(' - build/icon.ico (multi-size app icon with rounded dark square)')
+  console.log(' - build/installerSidebar.bmp (high-quality 164x314 NSIS banner with cloud logo)')
 }
 
 main().catch((err) => {
