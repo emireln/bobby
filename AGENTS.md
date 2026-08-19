@@ -3,10 +3,12 @@
 ## Commands
 
 ```bash
-pnpm dev       # 5190 (set in vite.config.ts, mirrored in .claude/launch.json)
-pnpm test      # vitest
-pnpm build     # vue-tsc --noEmit && vite build
-pnpm bump      # node scripts/bump-version.js (auto on git commit)
+npm run dev            # 5190 (set in vite.config.ts)
+npm run test           # vitest
+npm run build          # vue-tsc --noEmit && vite build
+npm run electron:dev   # runs Electron desktop app connected to dev server
+npm run electron:build # builds production web bundle + desktop NSIS installer
+npm run bump           # node scripts/bump-version.js (auto on git commit)
 ```
 
 Vue 3.5 + Vite 8 + TS strict + Tailwind 4 (`@tailwindcss/vite` plugin, no

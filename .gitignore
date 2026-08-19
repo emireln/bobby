@@ -11,3 +11,6 @@ CLAUDE.local.md
 # il vit sur le disque, rien n'en sort
 tasks/
 scripts/tmp_render/
+dist-electron
+dist_electron
+dist_app

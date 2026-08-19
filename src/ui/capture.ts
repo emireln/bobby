@@ -255,7 +255,7 @@ export interface ReglagesBot {
  * a une date d'horloge quelconque, alors qu'ici on veut une sequence
  * reproductible qui commence au debut. C'est possible parce que `engine.sample(t)`
  * est une fonction pure du temps — la meme date redonne toujours la meme image —
- * et parce qu'un `BloubBot` a qui on donne `frozenAt` ne lance aucune boucle
+ * et parce qu'un `BobbyBot` a qui on donne `frozenAt` ne lance aucune boucle
  * d'animation ni aucun ecouteur : on le fait avancer nous-memes.
  *
  * Le meme composant sert donc a l'ecran et a l'export : une seule source de

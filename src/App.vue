@@ -9,6 +9,7 @@ import GifDialog from '@/components/GifDialog.vue'
 import Settings from '@/components/Settings.vue'
 import SideRail, { type ViewId } from '@/components/SideRail.vue'
 import Timeline from '@/components/Timeline.vue'
+import TitleBar from '@/components/TitleBar.vue'
 import { nomDeCycle, t } from '@/i18n'
 import {
   copie,
@@ -769,6 +770,7 @@ watch(
 </script>
 
 <template>
+  <TitleBar />
   <div v-if="gallery" class="p-5">
     <a class="text-xs text-[var(--muted)] underline underline-offset-2" href="#">
       {{ t('gallery.back') }}
