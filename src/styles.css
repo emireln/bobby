@@ -415,7 +415,7 @@ body,
   }
 
   .scene--gauche {
-    grid-template-columns: 24rem minmax(0, 1fr) 0;
+    grid-template-columns: 28rem minmax(0, 1fr) 0;
   }
 
   /*

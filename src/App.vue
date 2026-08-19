@@ -863,7 +863,7 @@ watch(
            c'est LUI qui s'ecarte, et pas la scene entiere. -->
       <aside
         v-if="!preview"
-        class="panneau scene__gauche w-full lg:flex lg:h-[calc(100dvh_-_3rem_-_var(--timeline))] lg:w-80 lg:shrink-0 lg:flex-col lg:justify-center lg:self-start lg:-translate-y-12 lg:pl-14"
+        class="panneau scene__gauche w-full lg:flex lg:h-[calc(100dvh_-_3rem_-_var(--timeline))] lg:w-96 lg:shrink-0 lg:flex-col lg:justify-center lg:self-start lg:-translate-y-12 lg:pl-28"
         :class="gauche ? 'panneau--ouvert max-lg:order-2' : 'max-lg:hidden'"
       >
         <Settings />

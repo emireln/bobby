@@ -84,20 +84,20 @@ const droplet = normalize(
 /** Capsule couchee : enveloppe de deux disques cote a cote. */
 const capsule = profileFromPolygon(hullOfCircles(-0.42, 0, 0.62, 0.42, 0, 0.62), 0, 0)
 
-/** Coeur : deux lobes superieurs bien dessines, flancs en V sans renflement et pointe douce en bas. */
+/** Coeur : deux lobes superieurs doux, taille pleine et pointe arrondie en bas. */
 const heart = normalize(
   unionOfCirclesProfile([
-    { x: -0.33, y: -0.26, r: 0.52 },
-    { x: 0.33, y: -0.26, r: 0.52 },
-    { x: 0, y: -0.18, r: 0.66 },
-    { x: -0.20, y: 0.05, r: 0.52 },
-    { x: 0.20, y: 0.05, r: 0.52 },
-    { x: 0, y: 0.05, r: 0.60 },
-    { x: -0.10, y: 0.25, r: 0.44 },
-    { x: 0.10, y: 0.25, r: 0.44 },
-    { x: 0, y: 0.25, r: 0.48 },
-    { x: 0, y: 0.48, r: 0.32 },
-    { x: 0, y: 0.62, r: 0.18 }
+    { x: -0.30, y: -0.25, r: 0.50 },
+    { x: 0.30, y: -0.25, r: 0.50 },
+    { x: 0, y: -0.10, r: 0.65 },
+    { x: -0.16, y: 0.10, r: 0.52 },
+    { x: 0.16, y: 0.10, r: 0.52 },
+    { x: 0, y: 0.10, r: 0.58 },
+    { x: -0.08, y: 0.28, r: 0.44 },
+    { x: 0.08, y: 0.28, r: 0.44 },
+    { x: 0, y: 0.28, r: 0.48 },
+    { x: 0, y: 0.44, r: 0.36 },
+    { x: 0, y: 0.56, r: 0.24 }
   ]),
   1.05
 )
