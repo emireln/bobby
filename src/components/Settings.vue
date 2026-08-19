@@ -80,9 +80,45 @@ function auClavier(event: KeyboardEvent, index: number) {
         "
         @click="langue = l.id"
       >
-        <!-- le drapeau est decoratif : le nom de la langue dit deja tout, et un
-             lecteur d'ecran annoncerait « drapeau de la France » pour rien -->
-        <span class="text-base leading-none" aria-hidden="true">{{ l.emoji }}</span>
+        <!-- drapeaux SVG nets pour USA et Bresil (evite le texte "US"/"BR" sous Windows) -->
+        <svg
+          v-if="l.id === 'en'"
+          width="20"
+          height="14"
+          viewBox="0 0 640 480"
+          class="shrink-0 overflow-hidden rounded-[2px] shadow-xs"
+          aria-hidden="true"
+        >
+          <g fill-rule="evenodd">
+            <path fill="#bd3d44" d="M0 0h640v480H0z" />
+            <path stroke="#fff" stroke-width="37" d="M0 55.5h640M0 129.5h640M0 203.5h640M0 277.5h640M0 351.5h640M0 425.5h640" />
+            <path fill="#192f5d" d="M0 0h260v258.5H0z" />
+            <g fill="#fff" transform="translate(10, 10) scale(0.95)">
+              <circle cx="20" cy="20" r="10" /><circle cx="60" cy="20" r="10" /><circle cx="100" cy="20" r="10" /><circle cx="140" cy="20" r="10" /><circle cx="180" cy="20" r="10" /><circle cx="220" cy="20" r="10" />
+              <circle cx="40" cy="55" r="10" /><circle cx="80" cy="55" r="10" /><circle cx="120" cy="55" r="10" /><circle cx="160" cy="55" r="10" /><circle cx="200" cy="55" r="10" />
+              <circle cx="20" cy="90" r="10" /><circle cx="60" cy="90" r="10" /><circle cx="100" cy="90" r="10" /><circle cx="140" cy="90" r="10" /><circle cx="180" cy="90" r="10" /><circle cx="220" cy="90" r="10" />
+              <circle cx="40" cy="125" r="10" /><circle cx="80" cy="125" r="10" /><circle cx="120" cy="125" r="10" /><circle cx="160" cy="125" r="10" /><circle cx="200" cy="125" r="10" />
+              <circle cx="20" cy="160" r="10" /><circle cx="60" cy="160" r="10" /><circle cx="100" cy="160" r="10" /><circle cx="140" cy="160" r="10" /><circle cx="180" cy="160" r="10" /><circle cx="220" cy="160" r="10" />
+              <circle cx="40" cy="195" r="10" /><circle cx="80" cy="195" r="10" /><circle cx="120" cy="195" r="10" /><circle cx="160" cy="195" r="10" /><circle cx="200" cy="195" r="10" />
+              <circle cx="20" cy="230" r="10" /><circle cx="60" cy="230" r="10" /><circle cx="100" cy="230" r="10" /><circle cx="140" cy="230" r="10" /><circle cx="180" cy="230" r="10" /><circle cx="220" cy="230" r="10" />
+            </g>
+          </g>
+        </svg>
+        <svg
+          v-else-if="l.id === 'pt-br'"
+          width="20"
+          height="14"
+          viewBox="0 0 640 480"
+          class="shrink-0 overflow-hidden rounded-[2px] shadow-xs"
+          aria-hidden="true"
+        >
+          <g fill-rule="evenodd">
+            <path fill="#009c3b" d="M0 0h640v480H0z" />
+            <path fill="#ffdf00" d="M320 40L600 240L320 440L40 240Z" />
+            <circle cx="320" cy="240" r="115" fill="#002776" />
+            <path fill="#fff" d="M210 245 C 240 205, 390 205, 430 250 C 390 220, 240 220, 210 245 Z" />
+          </g>
+        </svg>
         <span class="flex-1">{{ l.nom }}</span>
         <svg
           v-if="l.id === langue"
@@ -161,19 +197,19 @@ function auClavier(event: KeyboardEvent, index: number) {
       </svg>
     </a>
 
-    <!-- Soutien : Buy Me a Coffee avec micro-animation au survol -->
+    <!-- Soutien : Buy Me a Coffee propre, minimaliste, aligne sur l'UI -->
     <a
-      class="group mt-2 flex items-center justify-between gap-2.5 rounded-xl border border-[#ffdd00]/40 bg-[#ffdd00]/10 px-3 py-2 text-sm font-medium text-[var(--ink)] transition duration-200 hover:border-[#ffdd00] hover:bg-[#ffdd00] hover:shadow-sm"
+      class="group mt-2 flex items-center justify-between gap-2.5 rounded-xl border border-[var(--line)] px-3 py-2 text-sm font-medium text-[var(--ink)] transition hover:border-[var(--muted)]"
       :href="SUPPORT_URL"
       target="_blank"
       rel="noopener noreferrer"
       :aria-label="t('settings.support')"
     >
-      <div class="flex items-center gap-2">
-        <span class="inline-block transition-transform duration-300 ease-out group-hover:scale-125 group-hover:-rotate-12" aria-hidden="true">☕</span>
+      <div class="flex items-center gap-2.5">
+        <span class="inline-block text-base transition-transform duration-300 ease-out group-hover:scale-125 group-hover:-rotate-12" aria-hidden="true">☕</span>
         <span>{{ t('settings.support') }}</span>
       </div>
-      <span class="text-xs text-[var(--muted)] group-hover:text-[var(--ink)]">Buy Me a Coffee ↗</span>
+      <span class="text-xs text-[var(--muted)] transition-colors group-hover:text-[var(--ink)]">Buy Me a Coffee ↗</span>
     </a>
 
     <p class="mt-4 text-xs text-[var(--muted)]">

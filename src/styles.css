@@ -50,6 +50,19 @@
   background: rgb(0 0 0 / 0.75);
 }
 
+.dark .wordmark {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.32) 0%,
+    rgba(255, 255, 255, 0.12) 48%,
+    rgba(255, 255, 255, 0) 88%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
 /*
  * La meme barre, sur une fenetre etroite : 236 px, c'est 29 % d'un ecran de
  * telephone, et la hauteur qu'elle prend est retranchee de tout ce qui reste.
@@ -444,6 +457,21 @@ body,
 
   .avatar--geant {
     transform: translate(30vw, 14vh) scale(2.5);
+    position: relative;
+  }
+
+  .avatar--geant::before {
+    content: '';
+    position: absolute;
+    inset: -20%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0, 0, 0, 0.04) 0%, rgba(0, 0, 0, 0.01) 45%, transparent 70%);
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  .dark .avatar--geant::before {
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 45%, transparent 70%);
   }
 
   .scene__gauche {
