@@ -145,7 +145,20 @@ const ptBr: typeof en = {
     creditsAria: 'Emir Lima Neto no GitHub, em uma nova aba',
     github: 'Ver o projeto no GitHub',
     githubAria: 'Repositório do projeto no GitHub, em uma nova aba',
-    support: 'Apoie o projeto'
+    support: 'Apoie o projeto',
+    updates: 'Atualizações',
+    version: 'Versão',
+    check_updates: 'Verificar atualizações',
+    checking_updates: 'Verificando atualizações...',
+    update_available: 'Atualização disponível: {version}',
+    download_update: 'Baixar atualização',
+    downloading_update: 'Baixando atualização...',
+    update_ready: 'Atualização baixada! Reinicie para instalar.',
+    restart_and_install: 'Reiniciar e Instalar',
+    up_to_date: 'O Bobby está atualizado',
+    update_error: 'Não foi possível verificar atualizações',
+    update_retry: 'Tentar novamente',
+    release_notes: 'Notas de lançamento'
   },
 
   states: {

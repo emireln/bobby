@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import BotTile from '@/components/BotTile.vue'
 import Customizer from '@/components/Customizer.vue'
 import BobbyBot from '@/components/BobbyBot.vue'
@@ -13,6 +13,7 @@ import Timeline from '@/components/Timeline.vue'
 import TitleBar from '@/components/TitleBar.vue'
 import VaultView from '@/components/VaultView.vue'
 import { nomDeCycle, t } from '@/i18n'
+import { initUpdater, quitAndInstall, updateState } from '@/ui/updater'
 import {
   copie,
   copieTexte,
@@ -236,6 +237,12 @@ const view = ref<ViewId>(initial.named ? 'animations' : 'personnaliser')
 const preview = ref(false)
 window.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') preview.value = false
+})
+
+const toastDismissed = ref(false)
+
+onMounted(() => {
+  initUpdater()
 })
 
 /**
@@ -1043,5 +1050,54 @@ watch(
       @preview="preview = true"
         @exporter="dialogueCycle = true"
     />
+
+    <!-- In-App Update Notification Toast (Non-intrusive, styled, no OS popups) -->
+    <transition
+      enter-active-class="transition duration-300 ease-out"
+      enter-from-class="translate-y-4 opacity-0 scale-95"
+      enter-to-class="translate-y-0 opacity-100 scale-100"
+      leave-active-class="transition duration-200 ease-in"
+      leave-from-class="translate-y-0 opacity-100 scale-100"
+      leave-to-class="translate-y-4 opacity-0 scale-95"
+    >
+      <div
+        v-if="(updateState.status === 'downloaded' || updateState.status === 'available') && !toastDismissed && view !== 'reglages'"
+        class="fixed bottom-5 right-5 z-50 flex items-center gap-3 rounded-2xl border border-[var(--line)] bg-[var(--paper)]/95 px-4 py-3 shadow-xl backdrop-blur-md text-[var(--ink)] max-w-sm"
+        role="status"
+      >
+        <span
+          class="h-2.5 w-2.5 rounded-full shrink-0"
+          :class="updateState.status === 'downloaded' ? 'bg-green-500 animate-pulse' : 'bg-amber-500'"
+        />
+        <div class="flex-1 min-w-0">
+          <p class="text-xs font-semibold leading-tight text-[var(--ink)]">
+            {{ updateState.status === 'downloaded' ? t('settings.update_ready') : t('settings.update_available', { version: updateState.version ?? '' }) }}
+          </p>
+        </div>
+        <button
+          v-if="updateState.status === 'downloaded'"
+          type="button"
+          class="shrink-0 rounded-xl bg-green-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-green-700 active:scale-95 transition cursor-pointer shadow-xs"
+          @click="quitAndInstall"
+        >
+          {{ t('settings.restart_and_install') }}
+        </button>
+        <button
+          v-else
+          type="button"
+          class="shrink-0 rounded-xl bg-[var(--ink)] px-3 py-1.5 text-xs font-semibold text-[var(--paper)] hover:opacity-90 active:scale-95 transition cursor-pointer"
+          @click="view = 'reglages'"
+        >
+          {{ t('settings.updates') }}
+        </button>
+        <button
+          type="button"
+          class="text-[var(--muted)] hover:text-[var(--ink)] p-1 text-xs cursor-pointer"
+          @click="toastDismissed = true"
+        >
+          ✕
+        </button>
+      </div>
+    </transition>
   </template>
 </template>

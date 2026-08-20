@@ -1,7 +1,7 @@
 {
   "name": "bobby",
   "private": true,
-  "version": "0.1.36",
+  "version": "0.1.37",
   "type": "module",
   "description": "bobby — animated SVG avatar recreation with customizable shapes, expressions, and colors.",
   "license": "MIT",
@@ -32,6 +32,13 @@
   "build": {
     "appId": "com.emireln.bobby",
     "productName": "Bobby",
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "emireln",
+        "repo": "bobby"
+      }
+    ],
     "directories": {
       "output": "dist_electron",
       "buildResources": "build"
@@ -77,6 +84,7 @@
   },
   "dependencies": {
     "@respeak/lucide-motion-vue": "^0.6.2",
+    "electron-updater": "^6.8.9",
     "mediabunny": "^1.54.0",
     "motion-v": "^2.4.0",
     "vue": "^3.5.41"

@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { langue, LANGUES, t } from '@/i18n'
 import { theme, THEMES } from '@/ui/theme'
+import { appVersion, checkForUpdates, downloadUpdate, quitAndInstall, updateState } from '@/ui/updater'
 
 /** Comptes de l'auteur. */
 const AUTHOR_URL = 'https://github.com/emireln'
@@ -12,6 +13,14 @@ const credits = computed(() => {
   const [avant = '', apres = ''] = t('settings.credits').split('{name}')
   return { avant, apres }
 })
+
+function formatBytes(bytes: number): string {
+  if (bytes <= 0) return '0 B'
+  const k = 1024
+  const sizes = ['B', 'KB', 'MB', 'GB']
+  const i = Math.floor(Math.log(bytes) / Math.log(k))
+  return `${(bytes / Math.pow(k, i)).toFixed(1)} ${sizes[i]}`
+}
 
 function auClavier(event: KeyboardEvent, index: number) {
   const pas = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[event.key]
@@ -130,6 +139,113 @@ function auClavier(event: KeyboardEvent, index: number) {
         >
           <span>{{ t(`settings.${th.nom}`) }}</span>
         </button>
+      </div>
+    </div>
+
+    <!-- Updates -->
+    <div>
+      <div class="flex items-center justify-between">
+        <h2 class="text-sm font-semibold text-[var(--ink)]">{{ t('settings.updates') }}</h2>
+        <span class="rounded-full bg-[var(--line)] px-2 py-0.5 text-xs font-mono text-[var(--muted)]">v{{ appVersion }}</span>
+      </div>
+
+      <div class="mt-2.5 rounded-2xl border border-[var(--line)] bg-[var(--paper)]/85 p-3.5 shadow-xs space-y-3">
+        <!-- Status Row -->
+        <div class="flex items-center justify-between gap-2">
+          <div class="flex items-center gap-2">
+            <span
+              class="h-2 w-2 rounded-full shrink-0"
+              :class="{
+                'bg-green-500 animate-pulse': updateState.status === 'downloaded',
+                'bg-blue-500 animate-spin': updateState.status === 'checking' || updateState.status === 'downloading',
+                'bg-amber-500': updateState.status === 'available',
+                'bg-emerald-500': updateState.status === 'not-available',
+                'bg-red-500': updateState.status === 'error',
+                'bg-zinc-400': updateState.status === 'idle' || updateState.status === 'dev'
+              }"
+            />
+            <span class="text-xs text-[var(--ink)] font-medium">
+              <template v-if="updateState.status === 'checking'">{{ t('settings.checking_updates') }}</template>
+              <template v-else-if="updateState.status === 'available'">{{ t('settings.update_available', { version: updateState.version ?? '' }) }}</template>
+              <template v-else-if="updateState.status === 'downloading'">{{ t('settings.downloading_update') }}</template>
+              <template v-else-if="updateState.status === 'downloaded'">{{ t('settings.update_ready') }}</template>
+              <template v-else-if="updateState.status === 'not-available'">{{ t('settings.up_to_date') }}</template>
+              <template v-else-if="updateState.status === 'error'">{{ t('settings.update_error') }}</template>
+              <template v-else>{{ t('settings.version') }}: v{{ appVersion }}</template>
+            </span>
+          </div>
+
+          <!-- Check Action Button -->
+          <button
+            v-if="updateState.status === 'idle' || updateState.status === 'not-available' || updateState.status === 'dev'"
+            type="button"
+            class="flex items-center gap-1.5 rounded-xl border border-[var(--line)] bg-[var(--paper)] px-3 py-1 text-xs font-medium text-[var(--ink)] hover:bg-[var(--line)] transition cursor-pointer"
+            @click="checkForUpdates"
+          >
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0">
+              <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+              <path d="M3 3v5h5" />
+              <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
+              <path d="M16 21h5v-5" />
+            </svg>
+            <span>{{ t('settings.check_updates') }}</span>
+          </button>
+        </div>
+
+        <!-- Download Progress Bar -->
+        <div v-if="updateState.status === 'downloading'" class="space-y-1.5">
+          <div class="h-1.5 w-full overflow-hidden rounded-full bg-[var(--line)]">
+            <div
+              class="h-full rounded-full bg-[var(--ink)] transition-all duration-300"
+              :style="{ width: `${updateState.percent ?? 0}%` }"
+            />
+          </div>
+          <div class="flex items-center justify-between text-[10px] text-[var(--muted)] tabular-nums">
+            <span>{{ updateState.percent ?? 0 }}%</span>
+            <span v-if="updateState.total">{{ formatBytes(updateState.transferred ?? 0) }} / {{ formatBytes(updateState.total) }}</span>
+          </div>
+        </div>
+
+        <!-- Action: Download or Install or Retry -->
+        <div v-if="updateState.status === 'available'" class="pt-1 flex items-center justify-between gap-2">
+          <p v-if="updateState.releaseNotes" class="text-xs text-[var(--muted)] line-clamp-2">{{ updateState.releaseNotes }}</p>
+          <button
+            type="button"
+            class="flex items-center gap-1.5 rounded-xl bg-[var(--ink)] px-3.5 py-1.5 text-xs font-semibold text-[var(--paper)] hover:opacity-90 active:scale-95 transition cursor-pointer ml-auto"
+            @click="downloadUpdate"
+          >
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" x2="12" y1="15" y2="3" />
+            </svg>
+            <span>{{ t('settings.download_update') }}</span>
+          </button>
+        </div>
+
+        <div v-else-if="updateState.status === 'downloaded'" class="pt-1 flex items-center justify-end">
+          <button
+            type="button"
+            class="flex items-center gap-1.5 rounded-xl bg-green-600 px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-green-700 active:scale-95 transition cursor-pointer shadow-xs"
+            @click="quitAndInstall"
+          >
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" />
+            </svg>
+            <span>{{ t('settings.restart_and_install') }}</span>
+          </button>
+        </div>
+
+        <div v-else-if="updateState.status === 'error'" class="pt-1 flex items-center justify-between gap-2">
+          <p class="text-xs text-[var(--danger)] line-clamp-1">{{ updateState.error || t('settings.update_error') }}</p>
+          <button
+            type="button"
+            class="shrink-0 rounded-xl border border-[var(--line)] bg-[var(--paper)] px-3 py-1 text-xs font-medium text-[var(--ink)] hover:bg-[var(--line)] transition cursor-pointer"
+            @click="checkForUpdates"
+          >
+            {{ t('settings.update_retry') }}
+          </button>
+        </div>
       </div>
     </div>
 

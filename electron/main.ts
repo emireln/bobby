@@ -1,10 +1,68 @@
 import { app, BrowserWindow, ipcMain, Menu, nativeImage, Tray } from 'electron'
+import { autoUpdater } from 'electron-updater'
 import path from 'node:path'
 
 let mainWindow: BrowserWindow | null = null
 let tray: Tray | null = null
 
 const isDev = process.env.NODE_ENV === 'development' || !app.isPackaged
+
+// Configure autoUpdater
+autoUpdater.autoDownload = false
+autoUpdater.autoInstallOnAppQuit = true
+autoUpdater.allowPrerelease = false
+autoUpdater.allowDowngrade = false
+
+function sendUpdateStatus(status: string, extra: Record<string, unknown> = {}) {
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.webContents.send('app:update-status', {
+      status,
+      currentVersion: app.getVersion(),
+      ...extra
+    })
+  }
+}
+
+function setupAutoUpdater() {
+  autoUpdater.on('checking-for-update', () => {
+    sendUpdateStatus('checking')
+  })
+
+  autoUpdater.on('update-available', (info) => {
+    sendUpdateStatus('available', {
+      version: info.version,
+      releaseDate: info.releaseDate,
+      releaseNotes: typeof info.releaseNotes === 'string' ? info.releaseNotes : undefined
+    })
+  })
+
+  autoUpdater.on('update-not-available', (info) => {
+    sendUpdateStatus('not-available', {
+      version: info?.version
+    })
+  })
+
+  autoUpdater.on('error', (err) => {
+    sendUpdateStatus('error', {
+      error: err?.message || 'Error checking for updates'
+    })
+  })
+
+  autoUpdater.on('download-progress', (progressObj) => {
+    sendUpdateStatus('downloading', {
+      percent: Math.round(progressObj.percent),
+      transferred: progressObj.transferred,
+      total: progressObj.total,
+      bytesPerSecond: progressObj.bytesPerSecond
+    })
+  })
+
+  autoUpdater.on('update-downloaded', (info) => {
+    sendUpdateStatus('downloaded', {
+      version: info.version
+    })
+  })
+}
 
 function createWindow() {
   const iconPath =
@@ -32,6 +90,14 @@ function createWindow() {
 
   mainWindow.once('ready-to-show', () => {
     mainWindow?.show()
+    // Check for updates automatically in packaged app on launch
+    if (!isDev) {
+      setTimeout(() => {
+        autoUpdater.checkForUpdates().catch(() => {
+          // Silent catch on launch
+        })
+      }, 3000)
+    }
   })
 
   // Window state events
@@ -64,6 +130,52 @@ function createWindow() {
     return mainWindow?.isMaximized() ?? false
   })
 
+  // IPC handlers for auto-updates
+  ipcMain.handle('app:get-version', () => {
+    return app.getVersion()
+  })
+
+  ipcMain.handle('app:check-for-updates', async () => {
+    if (isDev) {
+      sendUpdateStatus('not-available', { version: app.getVersion() })
+      return {
+        success: true,
+        status: 'dev',
+        currentVersion: app.getVersion()
+      }
+    }
+    try {
+      const result = await autoUpdater.checkForUpdates()
+      return {
+        success: true,
+        updateInfo: result?.updateInfo
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err)
+      sendUpdateStatus('error', { error: msg })
+      return {
+        success: false,
+        error: msg
+      }
+    }
+  })
+
+  ipcMain.handle('app:download-update', async () => {
+    if (isDev) return { success: true }
+    try {
+      await autoUpdater.downloadUpdate()
+      return { success: true }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err)
+      sendUpdateStatus('error', { error: msg })
+      return { success: false, error: msg }
+    }
+  })
+
+  ipcMain.on('app:quit-and-install', () => {
+    autoUpdater.quitAndInstall(false, true)
+  })
+
   // Load URL or build
   if (isDev && process.env.VITE_DEV_SERVER_URL) {
     mainWindow.loadURL(process.env.VITE_DEV_SERVER_URL)
@@ -91,6 +203,19 @@ function createTray(iconPath: string) {
             if (mainWindow.isMinimized()) mainWindow.restore()
             mainWindow.show()
             mainWindow.focus()
+          }
+        }
+      },
+      {
+        label: 'Check for Updates...',
+        click: () => {
+          if (mainWindow) {
+            if (mainWindow.isMinimized()) mainWindow.restore()
+            mainWindow.show()
+            mainWindow.focus()
+          }
+          if (!isDev) {
+            autoUpdater.checkForUpdates().catch(() => {})
           }
         }
       },
@@ -130,6 +255,7 @@ if (!gotTheLock) {
   })
 
   app.whenReady().then(() => {
+    setupAutoUpdater()
     createWindow()
 
     app.on('activate', () => {

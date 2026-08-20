@@ -143,7 +143,20 @@ const en = {
     creditsAria: 'Emir Lima Neto on GitHub, in a new tab',
     github: 'View the project on GitHub',
     githubAria: 'The project repository on GitHub, in a new tab',
-    support: 'Support the project'
+    support: 'Support the project',
+    updates: 'Updates',
+    version: 'Version',
+    check_updates: 'Check for updates',
+    checking_updates: 'Checking for updates...',
+    update_available: 'Update available: {version}',
+    download_update: 'Download Update',
+    downloading_update: 'Downloading update...',
+    update_ready: 'Update downloaded! Restart to install.',
+    restart_and_install: 'Restart & Install',
+    up_to_date: 'Bobby is up to date',
+    update_error: 'Unable to check for updates',
+    update_retry: 'Retry',
+    release_notes: 'Release notes'
   },
 
   states: {

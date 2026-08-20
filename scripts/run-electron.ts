@@ -33,7 +33,7 @@ async function start() {
     bundle: true,
     platform: 'node',
     target: 'node20',
-    external: ['electron']
+    external: ['electron', 'electron-updater']
   })
 
   await build({
