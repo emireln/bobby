@@ -455,7 +455,7 @@ const expression = ref<string>(
   stored('expression', DEFAULT_EXPRESSION as string, (v) => EXPRESSION_BY_ID.has(v))
 )
 const eyeColor = ref<string>(
-  stored('yeux', 'blanc', (v) => v === 'blanc' || v === 'encre')
+  stored('yeux', color.value === 'blanc' ? 'encre' : 'blanc', (v) => v === 'blanc' || v === 'encre')
 )
 
 watch(shape, (v) => ecris('forme', v))

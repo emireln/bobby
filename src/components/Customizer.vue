@@ -30,13 +30,22 @@ function resetToDefault() {
   eyeColor.value = color.value === 'blanc' ? 'encre' : 'blanc'
 }
 
+function selectColor(cId: string) {
+  color.value = cId
+  if (cId === 'blanc') {
+    eyeColor.value = 'encre'
+  } else if (cId === 'encre') {
+    eyeColor.value = 'blanc'
+  }
+}
+
 function randomize() {
   const s = SHAPES[Math.floor(Math.random() * SHAPES.length)]
   const e = EXPRESSIONS[Math.floor(Math.random() * EXPRESSIONS.length)]
   const c = COLORS[Math.floor(Math.random() * COLORS.length)]
   if (s) shape.value = s.id
   if (e) expression.value = e.id
-  if (c) color.value = c.id
+  if (c) selectColor(c.id)
 }
 
 function onSaveCurrent() {
@@ -143,7 +152,7 @@ function onSaveCurrent() {
           :style="{ backgroundColor: c.hex }"
           :aria-label="t(`colors.${c.id}`)"
           :aria-pressed="color === c.id"
-          @click="color = c.id"
+          @click="selectColor(c.id)"
         />
       </div>
     </div>
