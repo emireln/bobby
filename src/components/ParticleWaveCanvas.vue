@@ -170,7 +170,7 @@ function render(timestamp: number) {
 
   const maxDistX = ((COLS - 1) / 2) * SPACING_X * currentScale
   const maxDistY = ((ROWS - 1) / 2) * SPACING_Y * currentScale
-  const sigma = 140
+  const sigma = 180
 
   for (let i = 0; i < particles.length; i++) {
     const p = particles[i]!
@@ -191,24 +191,29 @@ function render(timestamp: number) {
     let targetX = baseX + waveX
     let targetY = baseY + waveY
 
-    // Smooth Gaussian magnetic push from cursor
+    // Smooth fluid magnetic ripple push from cursor
     if (mouseActiveWeight > 0.01) {
       const screenX = currentCenterX + targetX
       const screenY = currentCenterY + targetY
       const dx = screenX - smoothMouseX
       const dy = screenY - smoothMouseY
       const distSq = dx * dx + dy * dy
+      const dist = Math.sqrt(distSq)
 
-      if (distSq < sigma * sigma * 4) {
+      if (dist < sigma * 2.2) {
         const gaussian = Math.exp(-distSq / (2 * sigma * sigma)) * mouseActiveWeight
-        targetX += dx * gaussian * 0.2
-        targetY += dy * gaussian * 0.2
+        // Fluid ripple wave propagation
+        const ripple = Math.sin(dist * 0.04 - simTime * 6) * gaussian * 12
+        const pushForce = gaussian * 0.28
+        
+        targetX += dx * pushForce + (dx / (dist + 1)) * ripple
+        targetY += dy * pushForce + (dy / (dist + 1)) * ripple
       }
     }
 
-    // Heavy viscous lerp to target position (guarantees zero jitter)
-    p.currX += (targetX - p.currX) * 0.05
-    p.currY += (targetY - p.currY) * 0.05
+    // Viscous fluid lerp to target position (smooth organic motion)
+    p.currX += (targetX - p.currX) * 0.08
+    p.currY += (targetY - p.currY) * 0.08
 
     const finalScreenX = currentCenterX + p.currX
     const finalScreenY = currentCenterY + p.currY
