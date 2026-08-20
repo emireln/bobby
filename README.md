@@ -53,6 +53,18 @@ Props: `size`, `shape`, `color`, `expression`, `paper`, `frozenAt`, `cycle`,
 `follow`, `gaze`. Models: `block`, `state`, `playing`, `elapsed`. See
 [BobbyBot.vue](src/components/BobbyBot.vue) for details.
 
+## Documentation
+
+Detailed architecture documents and guides are available in the [`docs/`](docs/) directory:
+
+- [Architecture & Engine Design](docs/architecture.md)
+- [Measurements & Geometry Invariants](docs/measurements.md)
+- [Desktop Application (Electron)](docs/electron.md)
+- [Avatar Vault Persistence](docs/vault.md)
+- [Export Pipelines](docs/export.md)
+- [Interface & Responsive Layout](docs/interface.md)
+- [Internationalization](docs/i18n.md)
+
 ## Support the Project
 
 If you find this project helpful or cool, consider supporting:
