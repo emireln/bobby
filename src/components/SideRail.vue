@@ -23,7 +23,7 @@ const muted = ref<ViewId | null>(null)
 
 <template>
   <nav
-    class="fixed top-3 left-1/2 z-20 -translate-x-1/2 rounded-2xl border border-[var(--line)] bg-[var(--paper)]/85 p-2 shadow-md backdrop-blur-md lg:top-1/2 lg:left-6 lg:translate-x-0 lg:-translate-y-1/2"
+    class="fixed top-[calc(var(--titlebar-height,0px)+0.75rem)] left-1/2 z-20 -translate-x-1/2 rounded-2xl border border-[var(--line)] bg-[var(--paper)]/85 p-2 shadow-md backdrop-blur-md lg:top-[calc(50%+calc(var(--titlebar-height,0px)/2))] lg:left-6 lg:translate-x-0 lg:-translate-y-1/2"
     :aria-label="t('rail.nav')"
   >
     <ul class="flex gap-1.5 lg:flex-col">

@@ -31,46 +31,19 @@ export function initUpdater() {
 }
 
 export async function checkForUpdates() {
-  if (isElectron.value && window.bobbyElectron) {
-    updateState.status = 'checking'
-    updateState.error = undefined
-    try {
-      const res = await window.bobbyElectron.checkForUpdates()
-      if (!res.success && res.error) {
-        updateState.status = 'error'
-        updateState.error = res.error
-      }
-    } catch (err: unknown) {
-      updateState.status = 'error'
-      updateState.error = err instanceof Error ? err.message : String(err)
-    }
-    return
-  }
+  if (!isElectron.value || !window.bobbyElectron) return
 
-  // Web fallback: query latest tag from GitHub
   updateState.status = 'checking'
   updateState.error = undefined
   try {
-    const res = await fetch('https://api.github.com/repos/emireln/bobby/releases/latest', {
-      headers: { Accept: 'application/vnd.github.v3+json' }
-    })
-    if (!res.ok) {
-      updateState.status = 'not-available'
-      return
+    const res = await window.bobbyElectron.checkForUpdates()
+    if (!res.success && res.error) {
+      updateState.status = 'error'
+      updateState.error = res.error
     }
-    const data = await res.json()
-    const latestTag = (data.tag_name || '').replace(/^v/, '')
-    if (latestTag && latestTag !== appVersion.value) {
-      updateState.status = 'available'
-      updateState.version = latestTag
-      updateState.releaseNotes = data.body
-      updateState.releaseDate = data.published_at
-    } else {
-      updateState.status = 'not-available'
-      updateState.version = appVersion.value
-    }
-  } catch {
-    updateState.status = 'not-available'
+  } catch (err: unknown) {
+    updateState.status = 'error'
+    updateState.error = err instanceof Error ? err.message : String(err)
   }
 }
 
@@ -78,8 +51,6 @@ export async function downloadUpdate() {
   if (isElectron.value && window.bobbyElectron) {
     updateState.status = 'downloading'
     await window.bobbyElectron.downloadUpdate()
-  } else {
-    window.open('https://github.com/emireln/bobby/releases/latest', '_blank')
   }
 }
 

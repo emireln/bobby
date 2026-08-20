@@ -6,10 +6,12 @@ const props = withDefaults(
   defineProps<{
     active?: boolean
     fullscreen?: boolean
+    view?: string
   }>(),
   {
     active: true,
-    fullscreen: false
+    fullscreen: false,
+    view: 'personnaliser'
   }
 )
 
@@ -97,13 +99,15 @@ function resize() {
 function updateTargetCenter() {
   targetScale = props.fullscreen ? 1.35 : 1.15
   const avatarEl = document.querySelector('.avatar')
+  const isSettings = props.view === 'reglages'
   if (avatarEl) {
     const rect = avatarEl.getBoundingClientRect()
-    // Shift more to right in settings (+55px), lower in preview (+70px)
-    targetCenterX = rect.left + rect.width / 2 + (props.fullscreen ? 0 : 55)
+    // Shift more to right in settings (+110px), lower in preview (+70px)
+    const settingsShiftX = isSettings ? 110 : (props.fullscreen ? 0 : 55)
+    targetCenterX = rect.left + rect.width / 2 + settingsShiftX
     targetCenterY = rect.top + rect.height / 2 + (props.fullscreen ? 70 : 20)
   } else {
-    targetCenterX = props.fullscreen ? width * 0.5 : width * 0.78
+    targetCenterX = props.fullscreen ? width * 0.5 : (isSettings ? width * 0.86 : width * 0.78)
     targetCenterY = height * 0.5 + (props.fullscreen ? 70 : 20)
   }
 }
@@ -258,7 +262,7 @@ watch(() => props.active, (val) => {
   if (val) resize()
 })
 
-watch(() => props.fullscreen, () => {
+watch(() => [props.fullscreen, props.view], () => {
   updateTargetCenter()
 })
 </script>

@@ -14,6 +14,12 @@
 
   --timeline: 236px;
   --bascule: 1s cubic-bezier(0.22, 1, 0.36, 1);
+  --titlebar-height: 0px;
+}
+
+:root.is-electron,
+.is-electron {
+  --titlebar-height: 32px;
 }
 
 .dark {
@@ -109,6 +115,8 @@ body,
   overflow-x: clip;
   /* repere du grand mot du pied de page, qui s'y cale en `absolute` */
   position: relative;
+  box-sizing: border-box;
+  padding-top: var(--titlebar-height, 0px);
 }
 
 /*

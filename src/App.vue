@@ -823,7 +823,7 @@ watch(
   <template v-else>
     <!-- Particle wave background canvas across the entire app -->
     <div class="fixed inset-0 z-0 pointer-events-none">
-      <ParticleWaveCanvas :active="true" :fullscreen="true" />
+      <ParticleWaveCanvas :active="true" :fullscreen="preview" :view="view" />
     </div>
 
     <!-- titre de structure : la page n'affiche volontairement aucun titre, mais
@@ -839,7 +839,7 @@ watch(
     <button
       v-else
       type="button"
-      class="fixed top-5 right-5 z-30 flex cursor-pointer items-center gap-2 rounded-2xl border border-[var(--line)] bg-[var(--paper)]/85 px-3.5 py-2 text-xs font-medium text-[var(--ink)] shadow-md backdrop-blur-md transition hover:bg-[var(--line)]"
+      class="fixed top-[calc(var(--titlebar-height,0px)+1.25rem)] right-5 z-30 flex cursor-pointer items-center gap-2 rounded-2xl border border-[var(--line)] bg-[var(--paper)]/85 px-3.5 py-2 text-xs font-medium text-[var(--ink)] shadow-md backdrop-blur-md transition hover:bg-[var(--line)]"
       @click="preview = false"
     >
       <span>{{ t('preview.exit') }}</span>
@@ -909,8 +909,8 @@ watch(
         class="scene__avatar relative flex flex-1 items-center justify-center max-lg:order-1 max-lg:flex-col max-lg:gap-4"
         :class="
           view === 'animations' && !preview
-            ? 'lg:self-start lg:min-h-[calc(100dvh_-_3rem_-_var(--timeline))]'
-            : 'self-center lg:min-h-[calc(100dvh_-_4rem)]'
+            ? 'lg:self-start lg:min-h-[calc(100dvh_-_3rem_-_var(--timeline)_-_var(--titlebar-height,0px))]'
+            : 'self-center lg:min-h-[calc(100dvh_-_4rem_-_var(--titlebar-height,0px))]'
         "
       >
         <!-- l'avatar se met a la hauteur disponible : sur une fenetre basse, la
@@ -920,8 +920,8 @@ watch(
           class="avatar relative flex aspect-square w-full items-center justify-center select-none"
           :class="[
             view === 'animations' && !preview
-              ? 'max-w-[min(460px,calc(100dvh_-_var(--timeline)_-_7rem))]'
-              : 'max-w-[min(520px,calc(100dvh_-_6rem))]',
+              ? 'max-w-[min(460px,calc(100dvh_-_var(--timeline)_-_7rem_-_var(--titlebar-height,0px)))]'
+              : 'max-w-[min(520px,calc(100dvh_-_6rem_-_var(--titlebar-height,0px)))]',
             nue && 'avatar--intro',
             view === 'reglages' && !preview && 'avatar--geant',
             (view === 'reglages' || preview) && 'cursor-pointer'

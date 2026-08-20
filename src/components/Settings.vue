@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { langue, LANGUES, t } from '@/i18n'
 import { theme, THEMES } from '@/ui/theme'
-import { appVersion, checkForUpdates, downloadUpdate, quitAndInstall, updateState } from '@/ui/updater'
+import { appVersion, checkForUpdates, downloadUpdate, isElectron, quitAndInstall, updateState } from '@/ui/updater'
 
 /** Comptes de l'auteur. */
 const AUTHOR_URL = 'https://github.com/emireln'
@@ -143,7 +143,7 @@ function auClavier(event: KeyboardEvent, index: number) {
     </div>
 
     <!-- Updates -->
-    <div>
+    <div v-if="isElectron">
       <div class="flex items-center justify-between">
         <h2 class="text-sm font-semibold text-[var(--ink)]">{{ t('settings.updates') }}</h2>
         <span class="rounded-full bg-[var(--line)] px-2 py-0.5 text-xs font-mono text-[var(--muted)]">v{{ appVersion }}</span>
