@@ -58,11 +58,11 @@ Props: `size`, `shape`, `color`, `expression`, `paper`, `frozenAt`, `cycle`,
 Detailed architecture documents and guides are available in the [`docs/`](docs/) directory:
 
 - [Architecture & Engine Design](docs/architecture.md)
-- [Measurements & Geometry Invariants](docs/measurements.md)
 - [Desktop Application (Electron)](docs/electron.md)
-- [Avatar Vault Persistence](docs/vault.md)
+- [Avatar Customization & Vault](docs/customizer.md)
+- [Timeline & Animation Cycles](docs/timeline.md)
 - [Export Pipelines](docs/export.md)
-- [Interface & Responsive Layout](docs/interface.md)
+- [Interface & Visual Design](docs/interface.md)
 - [Internationalization](docs/i18n.md)
 
 ## Support the Project

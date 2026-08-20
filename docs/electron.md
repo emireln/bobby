@@ -1,25 +1,31 @@
-# Electron Desktop Architecture
+# Desktop Application Architecture (Electron)
 
-`bobby` includes a production-ready Electron desktop client alongside its web application.
+Bobby includes a production-grade native desktop application powered by Electron.
 
-## Process Architecture
+## 1. Process Separation & Security
 
 - **Main Process (`electron/main.ts`)**:
-  - Creates the frameless window (`frame: false`, custom title bar).
-  - Handles window control IPC (`minimize`, `maximize`, `close`, `isMaximized`).
-  - Sets up the System Tray with quick actions (`Show Bobby`, `Check for Updates...`, `Quit`).
-  - Configures `autoUpdater` (from `electron-updater`) with progress and update events.
-  - Ensures a single instance lock.
-- **Preload Script (`electron/preload.ts`)**:
-  - Securely exposes `window.bobbyElectron` to the renderer using `contextBridge`.
-  - Exposes typed methods for window controls, version query, and updater listeners.
-- **Renderer Process (`src/`)**:
-  - Detects Electron environment via `window.bobbyElectron`.
-  - Mounts `<TitleBar />` at the top of the app.
-  - Dynamically sets `--titlebar-height: 32px` on `:root` / `#app` to ensure clean layout adaptation.
-  - In-app update notifications with zero OS popups and in-place download progress.
+  - Manages BrowserWindow lifecycle (`frame: false` for custom styled titlebar).
+  - Listens to IPC events for window controls (`minimize`, `maximize`, `close`, `isMaximized`).
+  - Configures background auto-updates via `electron-updater`.
+  - Instantiates the system tray icon with quick desktop actions.
+  - Enforces single application instance (`app.requestSingleInstanceLock`).
+- **Preload Bridge (`electron/preload.ts`)**:
+  - Context isolation enabled (`contextIsolation: true`, `nodeIntegration: false`).
+  - Exposes typed `window.bobbyElectron` API via `contextBridge.exposeInMainWorld`.
+- **Renderer (`src/`)**:
+  - Detects desktop environment and mounts `<TitleBar />`.
+  - Sets CSS variable `--titlebar-height: 32px` on root to adapt window padding automatically.
 
-## Build and Scripts
+## 2. In-App Silent Auto-Updater
 
-- `npm run electron:dev`: Compiles electron scripts with `esbuild` and starts Electron connected to Vite dev server.
-- `npm run electron:build`: Runs `scripts/build-electron.ts` to package the app for production and builds the NSIS Windows installer via `electron-builder`.
+- Updates run silently in the background with zero disruptive OS dialogs.
+- Custom updater state machine (`idle` -> `checking` -> `available` -> `downloading` -> `downloaded` -> `error`).
+- Real-time download progress bar displaying transfer percentage and byte rates.
+- In-app toast banner allows one-click restart and installation (`quitAndInstall`).
+- Web version disables desktop updater APIs and relies strictly on web builds.
+
+## 3. Packaging & Distribution
+
+- `npm run electron:dev`: Builds TypeScript main/preload scripts via `esbuild` and starts Electron connected to the Vite dev server.
+- `npm run electron:build`: Compiles the web production bundle and invokes `electron-builder` to produce the standalone installer (`Bobby Setup.exe`) and portable executables.
