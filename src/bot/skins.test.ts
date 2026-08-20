@@ -154,7 +154,7 @@ describe('formes du personnalisateur', () => {
    * `idle`, au byte.
    */
   it('choisir le cercle rend exactement la meme chose que ne rien choisir', () => {
-    expect(DEFAULT_SHAPE).toBe('cercle')
+    expect(DEFAULT_SHAPE).toBe('nuage')
     const cercle = SHAPE_BY_ID.get('cercle')!.radii
     for (const state of CORPS_DE_BASE) {
       for (const expr of [null, ...EXPRESSIONS]) {

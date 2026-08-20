@@ -119,6 +119,21 @@ export function clearVault(): SavedAvatar[] {
   return []
 }
 
+/** Exporte un avatar specifique sous forme de fichier JSON telechargeable. */
+export function exportAvatarJson(avatar: SavedAvatar): void {
+  const data = JSON.stringify({ version: 1, bobby: 'avatar', avatar }, null, 2)
+  const blob = new Blob([data], { type: 'application/json' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  const slug = avatar.name.toLowerCase().replace(/[^a-z0-9_-]/g, '-').slice(0, 25) || 'avatar'
+  a.download = `bobby-${slug}.json`
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
+  URL.revokeObjectURL(url)
+}
+
 /** Exporte le coffre complet sous forme de fichier JSON telechargeable. */
 export function exportVaultJson(vault: SavedAvatar[]): void {
   const data = JSON.stringify({ version: 1, bobby: 'vault', avatars: vault }, null, 2)
@@ -133,32 +148,44 @@ export function exportVaultJson(vault: SavedAvatar[]): void {
   URL.revokeObjectURL(url)
 }
 
-/** Importe et valide des avatars depuis une chaine JSON. */
+/** Importe et valide des avatars depuis une chaine JSON (avatar specifique ou coffre). */
 export function parseVaultImport(jsonStr: string): SavedAvatar[] {
-  const parsed = JSON.parse(jsonStr)
-  const list = Array.isArray(parsed) ? parsed : Array.isArray(parsed?.avatars) ? parsed.avatars : []
-  const result: SavedAvatar[] = []
+  try {
+    const parsed = JSON.parse(jsonStr)
+    const list = Array.isArray(parsed)
+      ? parsed
+      : Array.isArray(parsed?.avatars)
+        ? parsed.avatars
+        : parsed?.avatar && typeof parsed.avatar === 'object'
+          ? [parsed.avatar]
+          : parsed && typeof parsed === 'object' && ('shape' in parsed || 'color' in parsed)
+            ? [parsed]
+            : []
+    const result: SavedAvatar[] = []
 
-  for (const item of list) {
-    if (!item || typeof item !== 'object') continue
-    const shape = typeof item.shape === 'string' && SHAPE_BY_ID.has(item.shape) ? item.shape : 'nuage'
-    const color = typeof item.color === 'string' && COLOR_BY_ID.has(item.color) ? item.color : 'encre'
-    const expression =
-      typeof item.expression === 'string' && EXPRESSION_BY_ID.has(item.expression)
-        ? item.expression
-        : 'neutre'
-    const name =
-      typeof item.name === 'string' && item.name.trim() ? item.name.trim().slice(0, 30) : 'Bobby'
+    for (const item of list) {
+      if (!item || typeof item !== 'object') continue
+      const shape = typeof item.shape === 'string' && SHAPE_BY_ID.has(item.shape) ? item.shape : 'nuage'
+      const color = typeof item.color === 'string' && COLOR_BY_ID.has(item.color) ? item.color : 'encre'
+      const expression =
+        typeof item.expression === 'string' && EXPRESSION_BY_ID.has(item.expression)
+          ? item.expression
+          : 'neutre'
+      const name =
+        typeof item.name === 'string' && item.name.trim() ? item.name.trim().slice(0, 30) : 'Bobby'
 
-    result.push({
-      id: typeof item.id === 'string' ? item.id : `av_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
-      name,
-      shape,
-      color,
-      expression,
-      createdAt: typeof item.createdAt === 'number' ? item.createdAt : Date.now()
-    })
+      result.push({
+        id: typeof item.id === 'string' ? item.id : `av_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+        name,
+        shape,
+        color,
+        expression,
+        createdAt: typeof item.createdAt === 'number' ? item.createdAt : Date.now()
+      })
+    }
+
+    return result
+  } catch {
+    return []
   }
-
-  return result
 }

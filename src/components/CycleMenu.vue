@@ -74,7 +74,7 @@ onBeforeUnmount(() => window.removeEventListener('pointerdown', onOutside))
 
     <div
       v-if="open"
-      class="absolute bottom-full left-0 z-10 mb-2 w-56 rounded-xl bg-white p-1 shadow-lg ring-1 ring-black/5"
+      class="absolute bottom-full left-0 z-10 mb-2 w-56 rounded-2xl border border-[var(--line)] bg-[var(--paper)]/95 p-1.5 shadow-xl backdrop-blur-md text-[var(--ink)]"
     >
       <div
         v-for="c in cycles"
@@ -85,7 +85,7 @@ onBeforeUnmount(() => window.removeEventListener('pointerdown', onOutside))
              lieu d'etre coupe, et deborde du menu avec ses deux actions -->
         <button
           type="button"
-          class="flex min-w-0 flex-1 cursor-pointer items-center gap-2 rounded-lg px-2.5 py-1.5 text-left text-xs transition hover:bg-black/5"
+          class="flex min-w-0 flex-1 cursor-pointer items-center gap-2 rounded-xl px-2.5 py-1.5 text-left text-xs transition hover:bg-[var(--line)] text-[var(--ink)]"
           :title="nomDeCycle(c)"
           @click="choose(c.id)"
         >
@@ -96,7 +96,7 @@ onBeforeUnmount(() => window.removeEventListener('pointerdown', onOutside))
              boutons de plus pour une action qu'on fait une fois -->
         <button
           type="button"
-          class="flex h-6 w-6 shrink-0 cursor-pointer items-center justify-center rounded-md text-[var(--muted)] opacity-0 transition group-hover/row:opacity-100 hover:bg-black/5 hover:text-[var(--ink)] focus-visible:opacity-100"
+          class="flex h-6 w-6 shrink-0 cursor-pointer items-center justify-center rounded-lg text-[var(--muted)] opacity-0 transition group-hover/row:opacity-100 hover:bg-[var(--line)] hover:text-[var(--ink)] focus-visible:opacity-100"
           :aria-label="t('cycles.menuRenameAria', { name: nomDeCycle(c) })"
           @click="((open = false), emit('rename', c.id))"
         >
@@ -114,7 +114,7 @@ onBeforeUnmount(() => window.removeEventListener('pointerdown', onOutside))
         <button
           v-if="cycles.length > 1"
           type="button"
-          class="mr-1 flex h-6 w-6 shrink-0 cursor-pointer items-center justify-center rounded-md text-[var(--muted)] opacity-0 transition group-hover/row:opacity-100 hover:bg-black/5 hover:text-[var(--danger)] focus-visible:opacity-100"
+          class="mr-1 flex h-6 w-6 shrink-0 cursor-pointer items-center justify-center rounded-lg text-[var(--muted)] opacity-0 transition group-hover/row:opacity-100 hover:bg-red-500/15 hover:text-red-500 focus-visible:opacity-100"
           :aria-label="t('cycles.menuRemoveAria', { name: nomDeCycle(c) })"
           @click="((open = false), emit('remove', c.id))"
         >
@@ -135,7 +135,7 @@ onBeforeUnmount(() => window.removeEventListener('pointerdown', onOutside))
 
       <button
         type="button"
-        class="flex w-full cursor-pointer items-center gap-2 rounded-lg px-2.5 py-1.5 text-left text-xs transition hover:bg-black/5"
+        class="flex w-full cursor-pointer items-center gap-2 rounded-xl px-2.5 py-1.5 text-left text-xs transition hover:bg-[var(--line)] text-[var(--ink)]"
         @click="create"
       >
         <span class="w-3 shrink-0 text-[var(--muted)]">+</span>

@@ -26,7 +26,7 @@ Vue 3, Vite, TypeScript, Tailwind 4, Electron.
 
 The rail switches between three views:
 
-- **Customise**: 16 body shapes, 24 colours, 24 expressions, customizable animated speech bubble with live character limit, and **Avatar Vault** with local persistence and JSON import/export.
+- **Customise**: 16 body shapes, 30 colours, 24 expressions, customizable animated speech bubble with live character limit, and **Avatar Vault** with local persistence and JSON import/export.
 - **Animations**: 18 animation states (including `idle`, `bounce`, `pulse`, `spin`, `wave`, `orbit`, `burst`, `comet`, etc.) with a timeline editor to arrange states, durations, and cycles.
 - **Settings**: language switcher (English 🇺🇸 / Portuguese 🇧🇷), theme switcher (System / Light / Dark), dynamic ambient glow preview, and project support.
 - **Desktop Application (Electron)**: Native cross-platform desktop application with custom draggable titlebar, system tray integration with quick actions, and automated Windows NSIS `setup.exe` installer with custom sidebar banner.

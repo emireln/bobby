@@ -6,6 +6,7 @@ import BobbyBot from '@/components/BobbyBot.vue'
 import ExportBar from '@/components/ExportBar.vue'
 import CycleDialog from '@/components/CycleDialog.vue'
 import GifDialog from '@/components/GifDialog.vue'
+import ParticleWaveCanvas from '@/components/ParticleWaveCanvas.vue'
 import Settings from '@/components/Settings.vue'
 import SideRail, { type ViewId } from '@/components/SideRail.vue'
 import Timeline from '@/components/Timeline.vue'
@@ -442,7 +443,7 @@ const droite = computed(() => !nue.value && view.value !== 'reglages')
 /* ------------------------------------------------------------------- skins */
 
 const shape = ref(stored('forme', DEFAULT_SHAPE, (v) => SHAPE_BY_ID.has(v)))
-const color = ref(stored('couleur', DEFAULT_COLOR, (v) => COLOR_BY_ID.has(v)))
+const color = ref(stored('couleur', isDark.value ? 'blanc' : DEFAULT_COLOR, (v) => COLOR_BY_ID.has(v)))
 const expression = ref(
   stored('expression', DEFAULT_EXPRESSION, (v) => EXPRESSION_BY_ID.has(v))
 )
@@ -457,16 +458,6 @@ watch(expression, (v) => ecris('expression', v))
  * restait `#f9f9f9` : un disque beige derriere le geant des reglages.
  */
 const fondGlobal = computed(() => (isDark.value ? '#09090b' : '#f9f9f9'))
-
-/**
- * En sombre, la couleur par defaut (`encre`, un noir mesure sur la video) se
- * confond avec le fond : le geant des reglages devient alors blanc. Seul cas ou
- * le corps ne suit pas le personnalisateur — l'export, lui, garde la vraie
- * couleur parce qu'il lit `color` directement.
- */
-const inkGeant = computed(() =>
-  view.value === 'reglages' && isDark.value && color.value === DEFAULT_COLOR ? '#ffffff' : undefined
-)
 
 function onLoadSavedAvatar(av: { shape: string; color: string; expression: string }) {
   shape.value = av.shape
@@ -581,6 +572,12 @@ const bot = ref<InstanceType<typeof BobbyBot> | null>(null)
 function onSeek(t: number) {
   const { index, elapsed: offset } = blockAt(cycle.value.blocks, t)
   bot.value?.seek(index, offset)
+}
+
+function onAvatarClick() {
+  if (view.value === 'reglages' || preview.value) {
+    preview.value = !preview.value
+  }
 }
 
 /* ------------------------------------------------------------------ export */
@@ -807,6 +804,7 @@ watch(
           :color="color"
           :expression="expression"
           :frozen-at="POSES[s.id]"
+          :paper="fondGlobal"
         />
         <figcaption class="text-xs text-[var(--muted)]">{{ t(`states.${s.id}`) }}</figcaption>
       </figure>
@@ -814,6 +812,14 @@ watch(
   </div>
 
   <template v-else>
+    <!-- Particle wave background canvas behind bobbybot in settings and preview mode -->
+    <div
+      class="fixed inset-0 z-0 pointer-events-none transition-opacity duration-700 ease-out"
+      :class="(view === 'reglages' || preview) ? 'opacity-100' : 'opacity-0'"
+    >
+      <ParticleWaveCanvas :active="view === 'reglages' || preview" :fullscreen="preview" />
+    </div>
+
     <!-- titre de structure : la page n'affiche volontairement aucun titre, mais
          un document sans h1 n'est pas navigable au lecteur d'ecran -->
     <h1 class="sr-only">{{ t('app.name') }}</h1>
@@ -827,11 +833,13 @@ watch(
     <button
       v-else
       type="button"
-      class="fixed top-5 right-5 z-30 flex cursor-pointer items-center gap-1.5 rounded-lg bg-white/80 px-2.5 py-1.5 text-xs text-[var(--muted)] shadow-sm backdrop-blur transition hover:text-[var(--ink)]"
+      class="fixed top-5 right-5 z-30 flex cursor-pointer items-center gap-2 rounded-2xl border border-[var(--line)] bg-[var(--paper)]/85 px-3.5 py-2 text-xs font-medium text-[var(--ink)] shadow-md backdrop-blur-md transition hover:bg-[var(--line)]"
       @click="preview = false"
     >
-      {{ t('preview.exit') }}
-      <kbd class="rounded bg-black/5 px-1 py-0.5 text-[10px]">{{ t('preview.key') }}</kbd>
+      <span>{{ t('preview.exit') }}</span>
+      <kbd class="rounded-lg border border-[var(--line)] bg-[var(--paper)] px-1.5 py-0.5 text-[10px] text-[var(--muted)]">
+        {{ t('preview.key') }}
+      </kbd>
     </button>
 
     <!-- La place de la barre de montage n'est reservee QUE la ou elle existe.
@@ -847,7 +855,7 @@ watch(
          vue Animations le remplace par la reserve de la barre de montage, et une
          variante `max-lg:pb-*` reprendrait la main dessus. -->
     <div
-      class="scene min-h-full items-stretch justify-center p-8 max-lg:flex max-lg:flex-col max-lg:gap-10 max-lg:px-5"
+      class="scene relative z-10 min-h-full items-stretch justify-center p-8 max-lg:flex max-lg:flex-col max-lg:gap-10 max-lg:px-5"
       :class="[
         !preview && view === 'animations' && 'pb-[calc(var(--timeline)_+_1rem)]',
         // Sous 64rem le rail passe en bande HAUTE (cf. `SideRail`), et il flotte
@@ -881,7 +889,7 @@ watch(
            c'est LUI qui s'ecarte, et pas la scene entiere. -->
       <aside
         v-if="!preview"
-        class="panneau scene__gauche w-full lg:flex lg:h-[calc(100dvh_-_3rem_-_var(--timeline))] lg:w-96 lg:shrink-0 lg:flex-col lg:justify-center lg:self-start lg:-translate-y-12 lg:pl-28"
+        class="panneau scene__gauche w-full lg:flex lg:h-full lg:w-96 lg:shrink-0 lg:flex-col lg:justify-center lg:self-center lg:pl-28"
         :class="gauche ? 'panneau--ouvert max-lg:order-2' : 'max-lg:hidden'"
       >
         <Settings />
@@ -903,14 +911,16 @@ watch(
              barre de montage lui prend assez de place pour qu'un carre de 460
              deborde et fasse defiler la page -->
         <div
-          class="avatar relative flex aspect-square w-full items-center justify-center"
+          class="avatar relative flex aspect-square w-full items-center justify-center select-none"
           :class="[
             view === 'animations' && !preview
               ? 'max-w-[min(460px,calc(100dvh_-_var(--timeline)_-_7rem))]'
               : 'max-w-[min(520px,calc(100dvh_-_6rem))]',
             nue && 'avatar--intro',
-            view === 'reglages' && !preview && 'avatar--geant'
+            view === 'reglages' && !preview && 'avatar--geant',
+            (view === 'reglages' || preview) && 'cursor-pointer'
           ]"
+          @click="onAvatarClick"
         >
           <BobbyBot
             ref="bot"
@@ -927,7 +937,6 @@ watch(
             :follow="view === 'reglages'"
             :gaze="intro ? INTRO_GAZE : null"
             :paper="fondGlobal"
-            :ink="inkGeant"
           />
         </div>
 

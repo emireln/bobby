@@ -190,42 +190,22 @@ body,
  */
 .wordmark {
   /*
-   * `absolute` dans `#app`, et non `fixed`. `#app` fait exactement la hauteur de
-   * la fenetre, donc le bas est le meme — mais un element fixe est SORTI du
-   * document : il ne suit pas le rebond elastique quand on tente de defiler une
-   * page qui ne defile pas, alors que le mot de la landing page de Yuzu, lui, est
-   * dans le flux et accompagne le geste. En `absolute` il accompagne la page.
+   * `absolute` dans `#app`, centre horizontalement en bas de l'ecran.
    */
   position: absolute;
-  /* degage le rail, qui flotte (`fixed left-4`) et ne reserve rien dans la scene */
-  left: 6rem;
-  /* legerement sous le bord : c'est ce qui fait mordre les lettres par l'ecran */
+  left: 50%;
+  transform: translateX(-50%);
   bottom: -0.1em;
   pointer-events: none;
   user-select: none;
+  z-index: 10;
   line-height: 0.78;
-  /*
-   * Dimensionne d'apres la place REELLEMENT disponible, et non en `vw` seul : le
-   * mot part a 6rem du bord gauche, donc une taille proportionnelle a la fenetre
-   * finissait par pousser le dernier Y au-dela du bord droit. 3,05 est la largeur
-   * de « BOBBY » en cadratins a ce poids et cet interlettrage — mesuree, pas
-   * estimee — et le reste est la marge qu'on lui laisse a droite.
-   */
-  font-size: clamp(80px, calc((100vw - 7rem) / 3.05), 268px);
+  font-size: clamp(60px, calc(100vw / 3.8), 240px);
   font-weight: 900;
   letter-spacing: -0.045em;
-  /*
-   * Marge a droite DANS la boite, et non un espacement autour.
-   *
-   * `background-clip: text` peint le degrade sur la boite de l'element et le
-   * revele au travers des lettres : tout glyphe qui depasse cette boite n'a donc
-   * aucun degrade a montrer, et `-webkit-text-fill-color: transparent` le rend
-   * purement invisible. Or l'interlettrage negatif retranche 0,045 cadratin apres
-   * le DERNIER glyphe aussi, et la branche droite d'un Y depasse deja son avance :
-   * le Y final se coupait net, quelle que soit la largeur de la fenetre. C'est le
-   * padding qui elargit la boite du degrade, pas la taille du texte.
-   */
-  padding-right: 0.1em;
+  text-align: center;
+  white-space: nowrap;
+  padding: 0 0.25em;
   background: linear-gradient(
     180deg,
     rgba(0, 0, 0, 0.16) 0%,
@@ -248,53 +228,18 @@ body,
 }
 
 /*
- * Le mot sous 64rem : DANS LE FLUX, en bas de la page et centre.
- *
- * Le calage sorti du flux ne tient que tant que `#app` fait exactement la hauteur
- * de la fenetre, ce qui est vrai au-dessus de 64rem — rien n'y defile. En dessous
- * la page defile pour de vrai, et le mot restait a 812 px du haut du DOCUMENT :
- * par-dessus les credits au repos (mesure a 375 px : panneau jusqu'a 780, mot des
- * 753), puis en plein milieu de l'ecran une fois la page deroulee. Le remettre
- * dans le flux le rend a la page : il vient apres la scene, donc en dernier, et
- * rien ne peut plus lui passer dessus puisqu'il n'y a plus de recouvrement.
- *
- * Centre et non cale a gauche : les 6rem de marge degageaient le rail, qui est
- * passe en bande HAUTE a cette largeur. Il n'y a plus rien a contourner, et un mot
- * pleine largeur pose sous une colonne centree se lit de travers s'il ne l'est
- * pas. La marge droite de 0,1em disparait avec le calage : le centrage laisse du
- * jeu des deux cotes, donc le dernier Y n'a plus de bord ou se couper.
- *
- * Le plafond descend a 200 px : sur une fenetre de tablette, 268 px de decoration
- * mangeaient un quart de la page. Et le diviseur perd les 6rem de marge gauche,
- * qui n'existent plus ici — le mot occupe la largeur entiere moins les gouttieres
- * de la scene.
+ * Le mot sous 64rem : DANS LE FLUX, en bas de la page et centre sans rognage.
  */
 @media (width < 64rem) {
   .wordmark {
     position: static;
+    transform: none;
     text-align: center;
-    padding-right: 0;
-    font-size: clamp(80px, calc((100vw - 2.5rem) / 3.05), 200px);
-    /*
-     * Les lettres touchent le bord bas de la page.
-     *
-     * Une marge negative n'y suffit pas : la zone defilable est l'union des BOITES
-     * des descendants, les marges n'y entrent pas, et le talon de la fonte —
-     * l'espace des jambages, vide pour BOBBY qui n'en a aucun — depassait la boite
-     * de 21 px que la page comptait quand meme. D'ou 21 px de blanc sous le mot.
-     *
-     * On rogne donc a la LIGNE DE BASE : plus rien ne deborde, la page s'arrete ou
-     * les lettres s'arretent. C'est ce que fait le rognage de `#app` au-dessus de
-     * 64rem, ou le mot est simplement pose sous le bord.
-     */
-    height: 0.69em;
-    overflow: hidden;
-    /*
-     * Le degrade est peint sur la BOITE et revele au travers des lettres : rogner
-     * la boite l'aurait eteint plus haut (il s'annule a 88 % de sa hauteur). On lui
-     * rend donc la hauteur de la boite pleine, independamment du rognage.
-     */
-    background-size: 100% 0.78em;
+    padding: 0.5rem 0.25em 0.5rem;
+    font-size: clamp(40px, calc(100vw / 4.2), 110px);
+    height: auto;
+    overflow: visible;
+    background-size: 100% 100%;
   }
 }
 
@@ -359,10 +304,10 @@ body,
  * de s'ecraser.
  */
 .barre-export {
-  position: fixed;
+  position: absolute;
   bottom: 1.5rem;
-  left: 0;
-  right: 0;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   justify-content: center;
   z-index: 20;
@@ -373,7 +318,7 @@ body,
 
 .barre-export--cachee {
   opacity: 0;
-  transform: translateY(0.85rem);
+  transform: translate(-50%, 0.85rem);
 }
 
 @media (width >= 64rem) {
@@ -460,40 +405,8 @@ body,
   }
 
   .avatar--geant {
-    transform: translate(30vw, 14vh) scale(2.5);
+    transform: translate(25vw, 0) scale(2.2);
     position: relative;
-  }
-
-  .avatar--geant::before {
-    content: '';
-    position: absolute;
-    inset: -50%;
-    border-radius: 9999px;
-    background: radial-gradient(
-      circle at center,
-      rgba(0, 0, 0, 0.035) 0%,
-      rgba(0, 0, 0, 0.015) 30%,
-      rgba(0, 0, 0, 0.005) 55%,
-      transparent 75%
-    );
-    filter: blur(50px);
-    pointer-events: none;
-    z-index: -1;
-    transform: translateZ(0);
-    will-change: transform;
-  }
-
-  .dark .avatar--geant::before {
-    background: radial-gradient(
-      circle at center,
-      rgba(255, 255, 255, 0.08) 0%,
-      rgba(255, 255, 255, 0.03) 30%,
-      rgba(255, 255, 255, 0.008) 55%,
-      transparent 75%
-    );
-    filter: blur(50px);
-    transform: translateZ(0);
-    will-change: transform;
   }
 
   .scene__gauche {
@@ -567,30 +480,6 @@ body,
    * colonne dans les deux vues, donc la bande du bas est libre et l'avatar ne
    * bouge pas d'un pixel.
    */
-  /*
-   * Calee comme la barre de MONTAGE, et pas dans la colonne de l'avatar.
-   *
-   * C'est ce qui lui evite de bouger. Ancree dans la colonne, elle suivait
-   * l'interpolation de la grille : en venant des reglages, le panneau de gauche se
-   * referme et le centre de la colonne se deplace de 320 px — la barre glissait
-   * donc jusqu'a sa place au lieu d'y etre. La barre de montage, elle, ne bouge
-   * jamais parce qu'elle est posee sur la FENETRE.
-   *
-   * `left`/`right` sont exactement les siens : la bande couvre la colonne de
-   * l'avatar (4,5rem = marge + gouttiere ; 24,5rem = panneau + gouttiere + marge)
-   * et centre son contenu. La vue Personnaliser n'a qu'une seule disposition de
-   * grille, donc cette position est constante.
-   */
-  .barre-export {
-    position: fixed;
-    bottom: 2rem;
-    left: 4.5rem;
-    right: 24.5rem;
-    top: auto;
-    display: flex;
-    justify-content: center;
-    z-index: 20;
-  }
 }
 
 /*

@@ -56,12 +56,12 @@ onBeforeUnmount(() => window.removeEventListener('pointerdown', onOutside))
 <template>
   <div ref="root" class="relative" @keydown.esc="open = false">
     <div
-      class="flex overflow-hidden rounded-xl bg-[var(--ink)] text-[var(--paper)] shadow-sm transition"
+      class="flex items-center rounded-2xl border border-[var(--line)] bg-[var(--paper)]/85 p-1 shadow-md backdrop-blur-md text-[var(--ink)] transition"
       :class="occupe && 'opacity-60'"
     >
       <button
         type="button"
-        class="flex cursor-pointer items-center gap-2 py-2.5 pr-3 pl-3.5 text-sm font-medium transition hover:bg-white/10 disabled:cursor-default"
+        class="flex cursor-pointer items-center gap-2 rounded-xl py-2 pr-3 pl-3.5 text-sm font-medium text-[var(--ink)] transition hover:bg-[var(--line)] disabled:cursor-default disabled:hover:bg-transparent"
         :disabled="occupe"
         @click="lance(ACTION_DEFAUT)"
       >
@@ -72,6 +72,7 @@ onBeforeUnmount(() => window.removeEventListener('pointerdown', onOutside))
           height="17"
           viewBox="0 0 24 24"
           aria-hidden="true"
+          class="text-green-500"
         >
           <g fill="none" stroke="currentColor" stroke-width="1.5">
             <circle cx="12" cy="12" r="10" />
@@ -96,13 +97,12 @@ onBeforeUnmount(() => window.removeEventListener('pointerdown', onOutside))
         {{ libelle }}
       </button>
 
-      <!-- pleine hauteur : le conteneur est en `flex`, donc l'etirement suffit,
-           sans marge verticale qui la ferait paraitre flottante -->
-      <div class="w-px self-stretch bg-current opacity-25"></div>
+      <!-- separateur -->
+      <div class="w-px h-5 self-center bg-[var(--line)]"></div>
 
       <button
         type="button"
-        class="flex cursor-pointer items-center px-2.5 transition hover:bg-white/10 disabled:cursor-default"
+        class="flex cursor-pointer items-center rounded-xl p-2 text-[var(--muted)] hover:text-[var(--ink)] transition hover:bg-[var(--line)] disabled:cursor-default disabled:hover:bg-transparent"
         :disabled="occupe"
         :aria-label="t('export.more')"
         aria-haspopup="true"
@@ -132,13 +132,13 @@ onBeforeUnmount(() => window.removeEventListener('pointerdown', onOutside))
 
     <div
       v-if="open"
-      class="absolute right-0 bottom-full z-10 mb-2 w-60 rounded-xl border border-[var(--line)] bg-[var(--paper)] p-1 shadow-lg"
+      class="absolute right-0 bottom-full z-30 mb-2 w-60 rounded-2xl border border-[var(--line)] bg-[var(--paper)]/95 p-1.5 shadow-xl backdrop-blur-md text-[var(--ink)]"
     >
       <button
         v-for="action in actions"
         :key="action.id"
         type="button"
-        class="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-sm transition hover:bg-black/5"
+        class="flex w-full cursor-pointer items-center gap-2.5 rounded-xl px-2.5 py-2 text-left text-sm text-[var(--ink)] transition hover:bg-[var(--line)]"
         :class="action.id === 'copie' && 'mt-1 border-t border-[var(--line)] pt-2.5'"
         @click="lance(action.id)"
       >

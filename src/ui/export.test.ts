@@ -4,6 +4,7 @@ import { SHAPES } from '@/bot/skins'
 import {
   ACTIONS,
   BLANC,
+  NOIR,
   CYCLE_FPS,
   CYCLE_TAILLE,
   DEMI_ECRAN,
@@ -163,16 +164,18 @@ describe('fond du gif', () => {
     expect(anime.filter((a) => a.extension === 'gif')).toHaveLength(1)
   })
 
-  it('propose blanc et transparent, blanc par defaut', () => {
-    expect(FONDS_GIF).toEqual(['blanc', 'transparent'])
+  it('propose blanc, noir et transparent, blanc par defaut', () => {
+    expect(FONDS_GIF).toEqual(['blanc', 'noir', 'transparent'])
     expect(FONDS_GIF).toContain(FOND_GIF_DEFAUT)
     expect(FOND_GIF_DEFAUT).toBe('blanc')
   })
 
   /* « Fond blanc » doit etre BLANC, pas le `--paper` legerement casse du site. */
-  it('peint du blanc pur, et rien du tout en transparent', () => {
+  it('peint du blanc pur, du noir profond, et rien du tout en transparent', () => {
     expect(couleurDeFond('blanc')).toBe(BLANC)
     expect(BLANC).toBe('#ffffff')
+    expect(couleurDeFond('noir')).toBe(NOIR)
+    expect(NOIR).toBe('#0a0a0c')
     expect(couleurDeFond('transparent')).toBeNull()
   })
 })

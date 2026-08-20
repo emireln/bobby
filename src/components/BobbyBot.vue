@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, shallowRef, triggerRef, watch } from 'vue'
+import { isDark } from '@/ui/theme'
 import { NOTIF_BLUE } from '@/bot/decor'
 import { BotEngine, type BotFrame } from '@/bot/engine'
 import { clamp, easings } from '@/bot/math'
@@ -64,7 +65,7 @@ const props = withDefaults(
     color: DEFAULT_COLOR,
     ink: undefined,
     expression: DEFAULT_EXPRESSION,
-    paper: '#f9f9f9',
+    paper: undefined,
     frozenAt: undefined,
     cycle: () => defaultCycle().blocks,
     follow: false,
@@ -91,7 +92,11 @@ const R = RAYON
 const VB = DEMI_VIEWBOX
 
 const shapeRadii = computed(() => SHAPE_BY_ID.get(props.shape)?.radii ?? null)
-const ink = computed(() => props.ink ?? COLOR_BY_ID.get(props.color)?.hex ?? '#0a0a0c')
+const paper = computed(() => props.paper ?? (isDark.value ? '#09090b' : '#f9f9f9'))
+const ink = computed(() => {
+  if (props.ink) return props.ink
+  return COLOR_BY_ID.get(props.color)?.hex ?? (isDark.value ? '#ffffff' : '#0a0a0c')
+})
 const expression = computed(() => EXPRESSION_BY_ID.get(props.expression) ?? null)
 
 const engine = new BotEngine(R, state.value, shapeRadii.value, expression.value)
@@ -482,7 +487,7 @@ onBeforeUnmount(() => {
  */
 function dotAttrs(dot: BotFrame['dots'][number]) {
   const fill =
-    dot.color ?? (dot.depth === undefined ? ink.value : mixHex(props.paper, ink.value, dot.depth))
+    dot.color ?? (dot.depth === undefined ? ink.value : mixHex(paper.value, ink.value, dot.depth))
   const common = { fill, opacity: dot.opacity }
   return dot.d
     ? {
@@ -500,7 +505,7 @@ function dotAttrs(dot: BotFrame['dots'][number]) {
     :width="props.size"
     :height="props.size"
     :viewBox="`${-VB} ${-VB} ${VB * 2} ${VB * 2}`"
-    class="select-none will-change-transform"
+    class="select-none"
     shape-rendering="geometricPrecision"
     role="img"
     :aria-label="t('app.botAria')"
@@ -593,7 +598,7 @@ function dotAttrs(dot: BotFrame['dots'][number]) {
         laissaient voir jusqu'ici, le fond de la page. Les mettre en blanc les
         rendrait plus clairs que le fond, ce qui se verrait sur une grande boule.
       -->
-      <path :d="frame.bodyPath" :fill="props.paper" />
+      <path :d="frame.bodyPath" :fill="paper" />
       <g :mask="`url(#${maskId})`">
         <rect :x="-VB" :y="-VB" :width="VB * 2" :height="VB * 2" :fill="ink" />
       </g>

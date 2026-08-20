@@ -98,6 +98,24 @@ describe('Avatar Vault', () => {
     expect(loadVault()[1]?.name).toBe('Second')
   })
 
+  it('parses single avatar json import format', () => {
+    const raw = JSON.stringify({
+      version: 1,
+      bobby: 'avatar',
+      avatar: {
+        name: 'Single Bobby',
+        shape: 'coeur',
+        color: 'rose',
+        expression: 'joyeux'
+      }
+    })
+    const parsed = parseVaultImport(raw)
+    expect(parsed).toHaveLength(1)
+    expect(parsed[0]?.name).toBe('Single Bobby')
+    expect(parsed[0]?.shape).toBe('coeur')
+    expect(parsed[0]?.color).toBe('rose')
+  })
+
   it('clears all avatars', () => {
     saveToVault({ name: 'A', shape: 'cercle', color: 'encre', expression: 'neutre' })
     saveToVault({ name: 'B', shape: 'cercle', color: 'encre', expression: 'neutre' })

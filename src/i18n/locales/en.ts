@@ -26,7 +26,8 @@ const en = {
     shape: 'Shape',
     expression: 'Expression',
     color: 'Colour',
-    randomize: 'Randomize'
+    randomize: 'Randomize',
+    reset: 'Reset to default'
   },
 
   vault: {
@@ -35,10 +36,11 @@ const en = {
     saved: 'Saved to Vault!',
     name_placeholder: 'Avatar name...',
     empty: 'No saved avatars in vault yet',
+    export_avatar: 'Export JSON',
     export_all: 'Export JSON',
     import: 'Import JSON',
-    import_success: 'Avatars imported!',
-    import_error: 'Invalid JSON vault file',
+    import_success: 'Avatar imported!',
+    import_error: 'Invalid JSON file',
     delete: 'Delete avatar',
     load: 'Load avatar',
     rename: 'Rename avatar',
@@ -72,6 +74,8 @@ const en = {
     gifBackground: 'Background',
     fond_blanc: 'White background',
     fond_blanc_aide: 'Smooth edge, for light surfaces',
+    fond_noir: 'Dark background',
+    fond_noir_aide: 'Smooth edge, for dark surfaces',
     fond_transparent: 'Transparent background',
     fond_transparent_aide: 'Fits any background, edge a little hard',
     gifConfirm: 'Download',
@@ -183,6 +187,7 @@ const en = {
 
   colors: {
     encre: 'Ink',
+    blanc: 'White',
     creme: 'Cream',
     brun: 'Brown',
     rouge: 'Red',
@@ -205,7 +210,12 @@ const en = {
     sable: 'Sand',
     indigo: 'Indigo',
     prune: 'Plum',
-    charbon: 'Charcoal'
+    charbon: 'Charcoal',
+    emeraude: 'Emerald',
+    cyan: 'Cyan',
+    magenta: 'Magenta',
+    saumon: 'Salmon',
+    ardoise: 'Slate'
   },
 
   expressions: {

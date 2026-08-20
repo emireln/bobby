@@ -194,10 +194,11 @@ export const SHAPES: BotShape[] = [
 // Map indexee par `string` et non par `ShapeId` : les appelants interrogent avec
 // une valeur relue du localStorage ou d'une prop, donc non validee.
 export const SHAPE_BY_ID = new Map<string, BotShape>(SHAPES.map((s) => [s.id, s]))
-export const DEFAULT_SHAPE = 'cercle'
+export const DEFAULT_SHAPE = 'nuage'
 
 export type ColorId =
   | 'encre'
+  | 'blanc'
   | 'creme'
   | 'brun'
   | 'rouge'
@@ -221,6 +222,11 @@ export type ColorId =
   | 'indigo'
   | 'prune'
   | 'charbon'
+  | 'emeraude'
+  | 'cyan'
+  | 'magenta'
+  | 'saumon'
+  | 'ardoise'
 
 export interface BotColor {
   id: ColorId
@@ -230,6 +236,7 @@ export interface BotColor {
 /** Palette du personnalisateur. */
 export const COLORS: BotColor[] = [
   { id: 'encre', hex: '#0a0a0c' },
+  { id: 'blanc', hex: '#ffffff' },
   { id: 'brun', hex: '#8b5e3c' },
   { id: 'rouge', hex: '#e8483f' },
   { id: 'orange', hex: '#f08a24' },
@@ -252,11 +259,17 @@ export const COLORS: BotColor[] = [
   { id: 'sable', hex: '#d97706' },
   { id: 'indigo', hex: '#4338ca' },
   { id: 'prune', hex: '#701a75' },
-  { id: 'charbon', hex: '#334155' }
+  { id: 'charbon', hex: '#334155' },
+  { id: 'emeraude', hex: '#059669' },
+  { id: 'cyan', hex: '#06b6d4' },
+  { id: 'magenta', hex: '#d946ef' },
+  { id: 'saumon', hex: '#fb7185' },
+  { id: 'ardoise', hex: '#64748b' }
 ]
 
 export const COLOR_BY_ID = new Map<string, BotColor>(COLORS.map((c) => [c.id, c]))
 export const DEFAULT_COLOR = 'encre'
+export const DEFAULT_COLOR_DARK = 'blanc'
 
 /** Melange deux couleurs hex. Sert a la brume de profondeur des particules. */
 export function mixHex(from: string, to: string, t: number): string {

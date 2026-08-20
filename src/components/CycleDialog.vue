@@ -118,16 +118,19 @@ function ferme() {
         <label
           v-for="choix in FONDS_GIF"
           :key="choix"
-          class="flex cursor-pointer items-center gap-2.5 rounded-lg px-2 py-1.5 text-sm transition hover:bg-black/5"
+          class="flex cursor-pointer items-center gap-2.5 rounded-lg px-2 py-1.5 text-sm transition hover:bg-black/5 dark:hover:bg-white/5"
         >
           <input
             v-model="fond"
             type="radio"
             name="fondCycle"
             :value="choix"
-            class="accent-[var(--ink)]"
+            class="accent-[var(--ink)] cursor-pointer"
           />
-          {{ t(`export.fond_${choix}`) }}
+          <span class="flex flex-col">
+            <span class="font-medium text-[var(--ink)]">{{ t(`export.fond_${choix}`) }}</span>
+            <span class="text-xs text-[var(--muted)]">{{ t(`export.fond_${choix}_aide`) }}</span>
+          </span>
         </label>
       </fieldset>
 

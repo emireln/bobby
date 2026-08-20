@@ -28,7 +28,8 @@ const ptBr: typeof en = {
     shape: 'Forma',
     expression: 'Expressão',
     color: 'Cor',
-    randomize: 'Aleatório'
+    randomize: 'Aleatório',
+    reset: 'Restaurar padrão'
   },
 
   vault: {
@@ -37,9 +38,10 @@ const ptBr: typeof en = {
     saved: 'Salvo no Cofre!',
     name_placeholder: 'Nome do avatar...',
     empty: 'Nenhum avatar no cofre ainda',
+    export_avatar: 'Exportar JSON',
     export_all: 'Exportar JSON',
     import: 'Importar JSON',
-    import_success: 'Avatares importados!',
+    import_success: 'Avatar importado!',
     import_error: 'Arquivo JSON inválido',
     delete: 'Excluir avatar',
     load: 'Carregar avatar',
@@ -74,6 +76,8 @@ const ptBr: typeof en = {
     gifBackground: 'Fundo',
     fond_blanc: 'Fundo branco',
     fond_blanc_aide: 'Borda suave, para superfícies claras',
+    fond_noir: 'Fundo escuro',
+    fond_noir_aide: 'Borda suave, para superfícies escuras',
     fond_transparent: 'Fundo transparente',
     fond_transparent_aide: 'Combina com qualquer fundo, borda um pouco dura',
     gifConfirm: 'Baixar',
@@ -185,6 +189,7 @@ const ptBr: typeof en = {
 
   colors: {
     encre: 'Nanquim',
+    blanc: 'Branco',
     creme: 'Creme',
     brun: 'Marrom',
     rouge: 'Vermelho',
@@ -207,7 +212,12 @@ const ptBr: typeof en = {
     sable: 'Areia',
     indigo: 'Índigo',
     prune: 'Ameixa',
-    charbon: 'Carvão'
+    charbon: 'Carvão',
+    emeraude: 'Esmeralda',
+    cyan: 'Ciano',
+    magenta: 'Magenta',
+    saumon: 'Salmão',
+    ardoise: 'Ardósia'
   },
 
   expressions: {

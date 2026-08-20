@@ -44,8 +44,8 @@ function auClavier(event: KeyboardEvent, index: number) {
           class="flex cursor-pointer items-center gap-3 rounded-2xl border px-3.5 py-2.5 text-left text-sm transition-all"
           :class="
             l.id === langue
-              ? 'border-[var(--ink)] bg-[var(--paper)] font-semibold shadow-xs text-[var(--ink)]'
-              : 'border-[var(--line)] text-[var(--muted)] hover:border-[var(--muted)] hover:text-[var(--ink)] hover:bg-black/2.5'
+              ? 'border-transparent bg-[var(--ink)] font-medium shadow-xs text-[var(--paper)]'
+              : 'border-[var(--line)] bg-[var(--paper)]/85 text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--line)]'
           "
           @click="langue = l.id"
         >
@@ -95,7 +95,7 @@ function auClavier(event: KeyboardEvent, index: number) {
             height="14"
             viewBox="0 0 12 12"
             aria-hidden="true"
-            class="shrink-0 text-[var(--ink)]"
+            class="shrink-0 text-current"
           >
             <path
               d="M2.5 6.4 4.8 8.7 9.5 3.6"
@@ -113,7 +113,7 @@ function auClavier(event: KeyboardEvent, index: number) {
     <!-- Theme -->
     <div>
       <h2 class="text-sm font-semibold text-[var(--ink)]">{{ t('settings.theme') }}</h2>
-      <div class="mt-2.5 flex gap-1 rounded-2xl border border-[var(--line)] p-1 bg-[var(--paper)]" role="radiogroup" :aria-label="t('settings.theme')">
+      <div class="mt-2.5 flex gap-1 rounded-2xl border border-[var(--line)] p-1 bg-[var(--paper)]/85 backdrop-blur-md" role="radiogroup" :aria-label="t('settings.theme')">
         <button
           v-for="th in THEMES"
           :key="th.id"
@@ -124,7 +124,7 @@ function auClavier(event: KeyboardEvent, index: number) {
           :class="
             th.id === theme
               ? 'bg-[var(--ink)] text-[var(--paper)] shadow-xs'
-              : 'text-[var(--muted)] hover:text-[var(--ink)]'
+              : 'text-[var(--muted)] hover:bg-[var(--line)] hover:text-[var(--ink)]'
           "
           @click="theme = th.id"
         >
@@ -138,7 +138,7 @@ function auClavier(event: KeyboardEvent, index: number) {
       <h2 class="text-sm font-semibold text-[var(--ink)]">{{ t('settings.about') }}</h2>
       <div class="mt-2.5 flex flex-col gap-2">
         <a
-          class="flex items-center gap-3 rounded-2xl border border-[var(--line)] px-3.5 py-2.5 text-sm transition hover:border-[var(--muted)] hover:bg-black/2.5"
+          class="flex items-center gap-3 rounded-2xl border border-[var(--line)] bg-[var(--paper)]/85 px-3.5 py-2.5 text-sm text-[var(--ink)] transition hover:bg-[var(--line)] shadow-xs"
           :href="GITHUB"
           target="_blank"
           rel="noopener noreferrer"
@@ -170,7 +170,7 @@ function auClavier(event: KeyboardEvent, index: number) {
         </a>
 
         <a
-          class="group flex items-center gap-3 rounded-2xl border border-[var(--line)] px-3.5 py-2.5 text-sm transition hover:border-[var(--muted)] hover:bg-black/2.5"
+          class="group flex items-center gap-3 rounded-2xl border border-[var(--line)] bg-[var(--paper)]/85 px-3.5 py-2.5 text-sm text-[var(--ink)] transition hover:bg-[var(--line)] shadow-xs"
           :href="SUPPORT_URL"
           target="_blank"
           rel="noopener noreferrer"

@@ -170,16 +170,22 @@ export const cycleAccepteTransparence = (format: FormatCycle) => format === 'gif
  * `blanc` par defaut : c'est celui qui a l'air propre partout, la ou le
  * transparent montre ses marches d'escalier sur un fond de couleur.
  */
-export type FondGif = 'blanc' | 'transparent'
+export type FondGif = 'blanc' | 'noir' | 'transparent'
 
-export const FONDS_GIF: FondGif[] = ['blanc', 'transparent']
+export const FONDS_GIF: FondGif[] = ['blanc', 'noir', 'transparent']
 export const FOND_GIF_DEFAUT: FondGif = 'blanc'
 
 /** Blanc pur, et non le `--paper` du site : « fond blanc » doit etre blanc. */
 export const BLANC = '#ffffff'
+/** Noir d'encre profond pour le fond sombre. */
+export const NOIR = '#0a0a0c'
 
 /** La couleur a peindre sous la boule, ou `null` pour ne rien peindre. */
-export const couleurDeFond = (fond: FondGif) => (fond === 'blanc' ? BLANC : null)
+export const couleurDeFond = (fond: FondGif) => {
+  if (fond === 'blanc') return BLANC
+  if (fond === 'noir') return NOIR
+  return null
+}
 
 /**
  * UNE seule taille de PNG, volontairement : proposer 1024 et 2048 obligeait

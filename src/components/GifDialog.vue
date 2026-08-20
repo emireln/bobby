@@ -48,7 +48,7 @@ function confirm() {
         <label
           v-for="(choix, i) in FONDS_GIF"
           :key="choix"
-          class="flex cursor-pointer items-center gap-2.5 rounded-lg px-2 py-1.5 text-sm transition hover:bg-black/5"
+          class="flex cursor-pointer items-center gap-2.5 rounded-lg px-2 py-1.5 text-sm transition hover:bg-black/5 dark:hover:bg-white/5"
         >
           <input
             v-model="fond"
@@ -56,10 +56,10 @@ function confirm() {
             name="fond"
             :value="choix"
             :autofocus="i === 0"
-            class="accent-[var(--ink)]"
+            class="accent-[var(--ink)] cursor-pointer"
           />
           <span class="flex flex-col">
-            {{ t(`export.fond_${choix}`) }}
+            <span class="font-medium text-[var(--ink)]">{{ t(`export.fond_${choix}`) }}</span>
             <span class="text-xs text-[var(--muted)]">{{ t(`export.fond_${choix}_aide`) }}</span>
           </span>
         </label>
@@ -68,7 +68,7 @@ function confirm() {
       <div class="flex justify-end gap-2">
         <button
           type="button"
-          class="h-8 cursor-pointer rounded-lg px-3 text-xs text-[var(--muted)] transition hover:bg-black/5 hover:text-[var(--ink)]"
+          class="h-8 cursor-pointer rounded-lg px-3 text-xs text-[var(--muted)] transition hover:bg-black/5 hover:text-[var(--ink)] dark:hover:bg-white/5"
           @click="open = false"
         >
           {{ t('dialog.cancel') }}

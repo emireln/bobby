@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
+import { isDark } from '@/ui/theme'
 import BlockPicker from '@/components/BlockPicker.vue'
 import BobbyBot from '@/components/BobbyBot.vue'
 import {
@@ -410,7 +411,7 @@ function onRulerMove(e: PointerEvent) {
                   :shape="shape"
                   :color="color"
                   :expression="expression"
-                  :paper="i === block ? '#ffffff' : '#f2f2f2'"
+                  :paper="i === block ? (isDark ? '#18181b' : '#ffffff') : (isDark ? '#09090b' : '#f2f2f2')"
                   :frozen-at="POSES[b.state]"
                 />
               </span>

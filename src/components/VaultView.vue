@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import BobbyBot from '@/components/BobbyBot.vue'
+import ClockIcon from '@/components/icons/ClockIcon.vue'
 import { t } from '@/i18n'
 import {
-  clearVault,
-  exportVaultJson,
+  exportAvatarJson,
   loadVault,
   parseVaultImport,
   persistVault,
@@ -32,6 +32,7 @@ const saveMessage = ref('')
 const fileInput = ref<HTMLInputElement | null>(null)
 const editingId = ref<string | null>(null)
 const editingName = ref('')
+const hoveredDate = ref(false)
 
 function onLoadAvatar(av: SavedAvatar) {
   emit('load', av)
@@ -91,6 +92,11 @@ function onUpdateAvatarLook(id: string, event: Event) {
   }, 2000)
 }
 
+function onExportAvatar(av: SavedAvatar, event: Event) {
+  event.stopPropagation()
+  exportAvatarJson(av)
+}
+
 function onSortByName() {
   const sorted = [...vault.value].sort((a, b) => a.name.localeCompare(b.name))
   vault.value = sorted
@@ -101,16 +107,6 @@ function onSortByDate() {
   const sorted = [...vault.value].sort((a, b) => b.createdAt - a.createdAt)
   vault.value = sorted
   persistVault(sorted)
-}
-
-function onClearAllVault() {
-  if (window.confirm(t('vault.clear_confirm'))) {
-    vault.value = clearVault()
-  }
-}
-
-function onExportVault() {
-  exportVaultJson(vault.value)
 }
 
 function triggerImport() {
@@ -178,28 +174,13 @@ function onFileSelected(e: Event) {
         <button
           v-if="vault.length > 1"
           type="button"
-          class="rounded-lg px-2 py-1 text-xs font-medium text-[var(--muted)] hover:bg-[var(--line)] hover:text-[var(--ink)] transition cursor-pointer"
+          class="flex items-center justify-center rounded-lg p-1 text-xs font-medium text-[var(--muted)] hover:bg-[var(--line)] hover:text-[var(--ink)] transition cursor-pointer"
           :title="t('vault.sort_date')"
+          @mouseenter="hoveredDate = true"
+          @mouseleave="hoveredDate = false"
           @click="onSortByDate"
         >
-          🕒
-        </button>
-
-        <!-- Export JSON -->
-        <button
-          v-if="vault.length > 0"
-          type="button"
-          class="flex items-center gap-1 rounded-lg border border-[var(--line)] px-2.5 py-1 text-xs font-medium text-[var(--muted)] hover:bg-[var(--line)] hover:text-[var(--ink)] transition cursor-pointer"
-          :title="t('vault.export_all')"
-          :aria-label="t('vault.export_all')"
-          @click="onExportVault"
-        >
-          <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-            <polyline points="7 10 12 15 17 10" />
-            <line x1="12" x2="12" y1="15" y2="3" />
-          </svg>
-          <span>JSON</span>
+          <ClockIcon :size="15" :hovered="hoveredDate" />
         </button>
 
         <!-- Import JSON -->
@@ -224,17 +205,6 @@ function onFileSelected(e: Event) {
           class="hidden"
           @change="onFileSelected"
         />
-
-        <!-- Clear all -->
-        <button
-          v-if="vault.length > 0"
-          type="button"
-          class="rounded-lg p-1 text-xs text-red-500 hover:bg-red-500/10 transition cursor-pointer"
-          :title="t('vault.clear_all')"
-          @click="onClearAllVault"
-        >
-          ✕
-        </button>
       </div>
     </div>
 
@@ -248,20 +218,20 @@ function onFileSelected(e: Event) {
       <div
         v-for="(av, index) in vault"
         :key="av.id"
-        class="group relative flex flex-col items-center rounded-2xl border border-[var(--line)] bg-[var(--paper)] p-3 transition-all duration-200 hover:border-[var(--ink)] hover:shadow-md cursor-pointer select-none"
+        class="group relative flex flex-col items-center rounded-2xl border p-3 transition-all duration-200 cursor-pointer select-none"
         :class="
           av.shape === shape && av.color === color && av.expression === expression
-            ? 'ring-2 ring-[var(--ink)] border-transparent'
-            : ''
+            ? 'border-[var(--ink)]/40 bg-[var(--line)] shadow-xs font-semibold ring-1 ring-[var(--ink)]/15'
+            : 'border-[var(--line)] bg-[var(--paper)]/85 hover:bg-[var(--line)]/50'
         "
         :title="`${av.name} (${t('vault.load')})`"
         @click="onLoadAvatar(av)"
       >
-        <!-- Top Action Buttons (Visible on hover) -->
-        <div class="absolute top-2 right-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-10" @click.stop>
+        <!-- Top Action Buttons (Visible on hover on desktop, always visible on mobile/focus) -->
+        <div class="absolute top-2 right-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 max-lg:opacity-100 transition-opacity z-10" @click.stop>
           <button
             type="button"
-            class="flex h-5 w-5 items-center justify-center rounded-md bg-[var(--line)] text-[var(--ink)] text-xs hover:bg-[var(--ink)] hover:text-[var(--paper)] transition cursor-pointer"
+            class="flex h-6 w-6 items-center justify-center rounded-lg bg-[var(--paper)]/95 backdrop-blur-xs text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--paper)] text-xs shadow-xs transition cursor-pointer"
             :title="t('vault.rename')"
             @click="onStartRename(av, $event)"
           >
@@ -269,7 +239,7 @@ function onFileSelected(e: Event) {
           </button>
           <button
             type="button"
-            class="flex h-5 w-5 items-center justify-center rounded-md bg-[var(--line)] text-[var(--ink)] text-xs hover:bg-[var(--ink)] hover:text-[var(--paper)] transition cursor-pointer"
+            class="flex h-6 w-6 items-center justify-center rounded-lg bg-[var(--paper)]/95 backdrop-blur-xs text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--paper)] text-xs shadow-xs transition cursor-pointer"
             :title="t('vault.update_current')"
             @click="onUpdateAvatarLook(av.id, $event)"
           >
@@ -277,7 +247,20 @@ function onFileSelected(e: Event) {
           </button>
           <button
             type="button"
-            class="flex h-5 w-5 items-center justify-center rounded-md bg-red-500/15 text-red-600 text-xs hover:bg-red-600 hover:text-white transition cursor-pointer"
+            class="flex h-6 w-6 items-center justify-center rounded-lg bg-[var(--paper)]/95 backdrop-blur-xs text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--paper)] text-xs shadow-xs transition cursor-pointer"
+            :title="t('vault.export_avatar')"
+            :aria-label="t('vault.export_avatar')"
+            @click="onExportAvatar(av, $event)"
+          >
+            <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" x2="12" y1="15" y2="3" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            class="flex h-6 w-6 items-center justify-center rounded-lg bg-[var(--paper)]/95 backdrop-blur-xs text-red-500 hover:bg-red-500/15 hover:text-red-600 text-xs shadow-xs transition cursor-pointer"
             :title="t('vault.delete')"
             :aria-label="t('vault.delete')"
             @click="onDeleteAvatar(av.id, $event)"
@@ -287,11 +270,11 @@ function onFileSelected(e: Event) {
         </div>
 
         <!-- Left / Right Reorder Badges (Top Left) -->
-        <div class="absolute top-2 left-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-10" @click.stop>
+        <div class="absolute top-2 left-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 max-lg:opacity-100 transition-opacity z-10" @click.stop>
           <button
             v-if="index > 0"
             type="button"
-            class="flex h-5 w-5 items-center justify-center rounded-md bg-[var(--line)] text-[var(--ink)] text-[10px] hover:bg-[var(--ink)] hover:text-[var(--paper)] transition cursor-pointer"
+            class="flex h-6 w-6 items-center justify-center rounded-lg bg-[var(--paper)]/95 backdrop-blur-xs text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--paper)] text-[10px] shadow-xs transition cursor-pointer"
             :title="t('vault.move_left')"
             @click="onMoveAvatar(index, -1, $event)"
           >
@@ -300,7 +283,7 @@ function onFileSelected(e: Event) {
           <button
             v-if="index < vault.length - 1"
             type="button"
-            class="flex h-5 w-5 items-center justify-center rounded-md bg-[var(--line)] text-[var(--ink)] text-[10px] hover:bg-[var(--ink)] hover:text-[var(--paper)] transition cursor-pointer"
+            class="flex h-6 w-6 items-center justify-center rounded-lg bg-[var(--paper)]/95 backdrop-blur-xs text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--paper)] text-[10px] shadow-xs transition cursor-pointer"
             :title="t('vault.move_right')"
             @click="onMoveAvatar(index, 1, $event)"
           >
@@ -325,14 +308,14 @@ function onFileSelected(e: Event) {
             v-model="editingName"
             type="text"
             maxlength="30"
-            class="w-full rounded-lg border border-[var(--ink)] bg-[var(--paper)] px-2 py-1 text-xs text-[var(--ink)] outline-none"
+            class="w-full rounded-xl border border-[var(--line)] bg-[var(--paper)] px-2.5 py-1 text-xs text-[var(--ink)] outline-none focus:border-[var(--muted)]"
             autofocus
             @keyup.enter="onSaveRename(av.id, $event)"
             @keyup.esc="onCancelRename($event)"
           />
           <button
             type="button"
-            class="rounded-md bg-[var(--ink)] px-2 py-1 text-xs font-semibold text-[var(--paper)]"
+            class="rounded-lg bg-[var(--ink)] px-2.5 py-1 text-xs font-semibold text-[var(--paper)] shadow-xs"
             @click="onSaveRename(av.id, $event)"
           >
             ✓
