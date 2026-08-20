@@ -5,7 +5,6 @@ import HistoryIcon from '@/components/icons/HistoryIcon.vue'
 import { DEFAULT_EXPRESSION, EXPRESSIONS } from '@/bot/expressions'
 import { COLORS, SHAPES } from '@/bot/skins'
 import { t } from '@/i18n'
-import { isDark } from '@/ui/theme'
 import { saveToVault } from '@/ui/vault'
 
 const shape = defineModel<string>('shape', { required: true })
@@ -25,7 +24,6 @@ const hoveredReset = ref(false)
 
 function resetToDefault() {
   shape.value = 'nuage'
-  color.value = isDark.value ? 'blanc' : 'encre'
   expression.value = DEFAULT_EXPRESSION
   eyeColor.value = color.value === 'blanc' ? 'encre' : 'blanc'
 }
