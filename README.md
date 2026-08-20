@@ -63,6 +63,7 @@ If you find this project helpful or cool, consider supporting:
 
 - Author: **Emir Lima Neto**
 - Repository: [https://github.com/emireln/bobby](https://github.com/emireln/bobby)
+- Forked from: [https://github.com/jeremy-prt/bloub](https://github.com/jeremy-prt/bloub)
 - Support: [https://buymeacoffee.com/emireln](https://buymeacoffee.com/emireln)
 
 ## License
