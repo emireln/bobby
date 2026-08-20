@@ -1,13 +1,15 @@
-name: Release
+name: Automatic Release
 
 on:
   push:
+    branches:
+      - main
     tags:
       - 'v*'
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Release tag (e.g. v0.1.37)'
+        description: 'Release tag override (e.g. v0.1.38)'
         required: false
         default: ''
 
@@ -21,6 +23,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -34,6 +38,23 @@ jobs:
       - name: Run tests
         run: npm run test
 
+      - name: Extract package version
+        id: version
+        shell: pwsh
+        run: |
+          $pkg = Get-Content package.json | ConvertFrom-Json
+          $tagInput = "${{ github.event.inputs.tag }}"
+          if ($tagInput -ne "") {
+            $tag = $tagInput
+          } elseif ($env:GITHUB_REF.StartsWith("refs/tags/v")) {
+            $tag = $env:GITHUB_REF.Substring(10)
+          } else {
+            $tag = "v$($pkg.version)"
+          }
+          echo "tag=$tag" >> $env:GITHUB_OUTPUT
+          echo "version=$($pkg.version)" >> $env:GITHUB_OUTPUT
+          Write-Host "Resolved release tag: $tag (version $($pkg.version))"
+
       - name: Build Web Bundle and Electron Installer
         run: npm run electron:build
         env:
@@ -43,6 +64,8 @@ jobs:
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: Bobby ${{ steps.version.outputs.tag }}
           files: |
             dist_electron/Bobby-Setup-*.exe
             dist_electron/latest.yml
