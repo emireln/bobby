@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import BobbyBot from '@/components/BobbyBot.vue'
 import ClockIcon from '@/components/icons/ClockIcon.vue'
+import DownloadIcon from '@/components/icons/DownloadIcon.vue'
 import { t } from '@/i18n'
 import {
   exportAvatarJson,
@@ -34,6 +35,7 @@ const fileInput = ref<HTMLInputElement | null>(null)
 const editingId = ref<string | null>(null)
 const editingName = ref('')
 const hoveredDate = ref(false)
+const hoveredExportId = ref<string | null>(null)
 
 function onLoadAvatar(av: SavedAvatar) {
   emit('load', av)
@@ -252,13 +254,11 @@ function onFileSelected(e: Event) {
             class="flex h-6 w-6 items-center justify-center rounded-lg bg-[var(--paper)]/95 backdrop-blur-xs text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--paper)] text-xs shadow-xs transition cursor-pointer"
             :title="t('vault.export_avatar')"
             :aria-label="t('vault.export_avatar')"
+            @mouseenter="hoveredExportId = av.id"
+            @mouseleave="hoveredExportId = null"
             @click="onExportAvatar(av, $event)"
           >
-            <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-              <polyline points="7 10 12 15 17 10" />
-              <line x1="12" x2="12" y1="15" y2="3" />
-            </svg>
+            <DownloadIcon :size="14" :hovered="hoveredExportId === av.id" />
           </button>
           <button
             type="button"

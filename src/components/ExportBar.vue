@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
+import DownloadIcon from '@/components/icons/DownloadIcon.vue'
 import { t } from '@/i18n'
 import { copiePossible } from '@/ui/capture'
 import { ACTIONS, ACTION_DEFAUT, type ActionId, type EtatExport } from '@/ui/export'
@@ -17,6 +18,7 @@ const emit = defineEmits<{ exporter: [ActionId] }>()
 
 const open = ref(false)
 const root = ref<HTMLElement | null>(null)
+const hoveredMain = ref(false)
 
 /**
  * La copie d'IMAGE n'est pas proposee la ou le navigateur ne sait pas en ecrire.
@@ -63,6 +65,8 @@ onBeforeUnmount(() => window.removeEventListener('pointerdown', onOutside))
         type="button"
         class="flex cursor-pointer items-center gap-2 rounded-xl py-2 pr-3 pl-3.5 text-sm font-medium text-[var(--ink)] transition hover:bg-[var(--line)] disabled:cursor-default disabled:hover:bg-transparent"
         :disabled="occupe"
+        @mouseenter="hoveredMain = true"
+        @mouseleave="hoveredMain = false"
         @click="lance(ACTION_DEFAUT)"
       >
         <!-- solar:check-circle-linear -->
@@ -79,21 +83,7 @@ onBeforeUnmount(() => window.removeEventListener('pointerdown', onOutside))
             <path stroke-linecap="round" stroke-linejoin="round" d="M8.5 12.5L10.5 14.5L15.5 9.5" />
           </g>
         </svg>
-        <!-- solar:download-minimalistic-linear -->
-        <svg v-else width="17" height="17" viewBox="0 0 24 24" aria-hidden="true">
-          <g
-            fill="none"
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="1.5"
-          >
-            <path
-              d="M3 15C3 17.8284 3 19.2426 3.87868 20.1213C4.75736 21 6.17157 21 9 21H15C17.8284 21 19.2426 21 20.1213 20.1213C21 19.2426 21 17.8284 21 15"
-            />
-            <path d="M12 3V16M8 11.625L12 16L16 11.625" />
-          </g>
-        </svg>
+        <DownloadIcon v-else :size="17" :hovered="hoveredMain" />
         {{ libelle }}
       </button>
 
@@ -160,30 +150,11 @@ onBeforeUnmount(() => window.removeEventListener('pointerdown', onOutside))
             />
           </g>
         </svg>
-        <!-- solar:download-minimalistic-linear — les deux telechargements
-             portent la meme icone : ce qui les distingue est le format, dit par
-             le libelle, pas la nature de l'action -->
-        <svg
+        <DownloadIcon
           v-else
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          aria-hidden="true"
+          :size="16"
           class="shrink-0 text-[var(--muted)]"
-        >
-          <g
-            fill="none"
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="1.5"
-          >
-            <path
-              d="M3 15C3 17.8284 3 19.2426 3.87868 20.1213C4.75736 21 6.17157 21 9 21H15C17.8284 21 19.2426 21 20.1213 20.1213C21 19.2426 21 17.8284 21 15"
-            />
-            <path d="M12 3V16M8 11.625L12 16L16 11.625" />
-          </g>
-        </svg>
+        />
         {{ t(`export.${action.id}`) }}
       </button>
     </div>

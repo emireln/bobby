@@ -5,6 +5,7 @@ import CycleMenu from '@/components/CycleMenu.vue'
 import NameDialog from '@/components/NameDialog.vue'
 import TimelineTrack from '@/components/TimelineTrack.vue'
 import ZoomSlider from '@/components/ZoomSlider.vue'
+import DownloadIcon from '@/components/icons/DownloadIcon.vue'
 import {
   blocksWith,
   makeBlock,
@@ -37,6 +38,8 @@ const props = defineProps<{
  * moteur. `preview` : la page entiere se met en scene, c'est elle qui decide.
  */
 const emit = defineEmits<{ seek: [seconds: number]; preview: []; exporter: [] }>()
+
+const hoveredExport = ref(false)
 
 const cycles = defineModel<Cycle[]>('cycles', { required: true })
 const activeId = defineModel<string>('activeId', { required: true })
@@ -222,23 +225,11 @@ function onRemove() {
         <button
           type="button"
           class="flex h-8 shrink-0 cursor-pointer items-center gap-2 rounded-xl bg-[var(--ink)] pr-3.5 pl-3 text-sm font-medium text-[var(--paper)] shadow-sm transition hover:opacity-90 active:scale-95 max-sm:w-8 max-sm:justify-center max-sm:px-0"
+          @mouseenter="hoveredExport = true"
+          @mouseleave="hoveredExport = false"
           @click="emit('exporter')"
         >
-          <!-- solar:download-minimalistic-linear, la meme que la barre d'export -->
-          <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
-            <g
-              fill="none"
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="1.5"
-            >
-              <path
-                d="M3 15C3 17.8284 3 19.2426 3.87868 20.1213C4.75736 21 6.17157 21 9 21H15C17.8284 21 19.2426 21 20.1213 20.1213C21 19.2426 21 17.8284 21 15"
-              />
-              <path d="M12 3V16M8 11.625L12 16L16 11.625" />
-            </g>
-          </svg>
+          <DownloadIcon :size="16" :hovered="hoveredExport" />
           <!-- `sr-only` et pas `hidden` : sous 40rem le bouton se reduit a son
                icone, mais le libelle reste son NOM accessible — un bouton dont
                tout le contenu est masque n'est plus annonce du tout, et il

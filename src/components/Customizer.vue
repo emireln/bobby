@@ -84,20 +84,6 @@ function onSaveCurrent() {
             <span>{{ eyeColor === 'blanc' ? t('panel.eye_white') : t('panel.eye_black') }}</span>
           </button>
 
-          <!-- Reinitialiser -->
-          <button
-            type="button"
-            class="flex items-center gap-1.5 rounded-md px-2 py-0.5 text-xs font-medium text-[var(--muted)] hover:bg-[var(--line)] hover:text-[var(--ink)] transition cursor-pointer"
-            :title="t('panel.reset')"
-            :aria-label="t('panel.reset')"
-            @mouseenter="hoveredReset = true"
-            @mouseleave="hoveredReset = false"
-            @click="resetToDefault"
-          >
-            <HistoryIcon :size="14" :hovered="hoveredReset" />
-            <span>{{ t('panel.reset') }}</span>
-          </button>
-
           <!-- Aleatoire -->
           <button
             type="button"
@@ -111,6 +97,20 @@ function onSaveCurrent() {
               <path d="M16 8h.01M8 8h.01M8 16h.01M16 16h.01M12 12h.01" />
             </svg>
             <span>{{ t('panel.randomize') }}</span>
+          </button>
+
+          <!-- Reinitialiser -->
+          <button
+            type="button"
+            class="flex items-center gap-1.5 rounded-md px-2 py-0.5 text-xs font-medium text-[var(--muted)] hover:bg-[var(--line)] hover:text-[var(--ink)] transition cursor-pointer"
+            :title="t('panel.reset')"
+            :aria-label="t('panel.reset')"
+            @mouseenter="hoveredReset = true"
+            @mouseleave="hoveredReset = false"
+            @click="resetToDefault"
+          >
+            <HistoryIcon :size="14" :hovered="hoveredReset" />
+            <span>{{ t('panel.reset') }}</span>
           </button>
         </div>
       </div>
