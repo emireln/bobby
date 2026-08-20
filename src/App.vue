@@ -821,12 +821,9 @@ watch(
   </div>
 
   <template v-else>
-    <!-- Particle wave background canvas behind bobbybot in settings and preview mode -->
-    <div
-      class="fixed inset-0 z-0 pointer-events-none transition-opacity duration-700 ease-out"
-      :class="(view === 'reglages' || preview) ? 'opacity-100' : 'opacity-0'"
-    >
-      <ParticleWaveCanvas :active="view === 'reglages' || preview" :fullscreen="preview" />
+    <!-- Particle wave background canvas across the entire app -->
+    <div class="fixed inset-0 z-0 pointer-events-none">
+      <ParticleWaveCanvas :active="true" :fullscreen="true" />
     </div>
 
     <!-- titre de structure : la page n'affiche volontairement aucun titre, mais
