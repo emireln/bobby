@@ -27,7 +27,9 @@ const en = {
     expression: 'Expression',
     color: 'Colour',
     randomize: 'Randomize',
-    reset: 'Reset to default'
+    reset: 'Reset',
+    eye_white: 'White eyes',
+    eye_black: 'Black eyes'
   },
 
   vault: {

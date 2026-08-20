@@ -397,13 +397,21 @@ export async function versSvgAnime(
   reglages: ReglagesBot,
   taille: number,
   nombre: number,
-  pas: number
+  pas: number,
+  paper?: string
 ): Promise<Blob> {
   let base = ''
-  const matrices = await sequenceDuBot(reglages, taille, nombre, pas, (svg, i) => {
-    if (i === 0) base = svgAutonome(svg, taille)
-    return matricesDesYeux(svg)
-  })
+  const matrices = await sequenceDuBot(
+    reglages,
+    taille,
+    nombre,
+    pas,
+    (svg, i) => {
+      if (i === 0) base = svgAutonome(svg, taille)
+      return matricesDesYeux(svg)
+    },
+    paper
+  )
   const markup = svgAnime(base, matrices, +((nombre - 1) * pas).toFixed(3))
   return new Blob([markup], { type: 'image/svg+xml' })
 }
@@ -421,7 +429,8 @@ export async function versGifAnime(
   taille: number,
   nombre: number,
   pas: number,
-  fond: string | null = null
+  fond: string | null = null,
+  paper?: string
 ): Promise<Blob> {
   // Un seul canvas pour toute la sequence : en creer un par image laisse des
   // dizaines de contextes au ramasse-miettes pendant l'export.
@@ -435,8 +444,7 @@ export async function versGifAnime(
       const ctx = await dessine(svgAutonome(svg, taille), taille, canvas, fond)
       return ctx.getImageData(0, 0, taille, taille).data
     },
-    // les yeux prennent la teinte du fond pour s'y fondre exactement
-    fond ?? undefined
+    fond ?? paper
   )
   return new Blob([gifAnime(images, taille, taille, Math.round(pas * 1000))], { type: 'image/gif' })
 }

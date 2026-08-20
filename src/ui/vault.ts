@@ -8,6 +8,7 @@ export interface SavedAvatar {
   shape: string
   color: string
   expression: string
+  eyeColor?: string
   createdAt: number
 }
 

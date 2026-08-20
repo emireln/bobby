@@ -11,6 +11,7 @@ import { saveToVault } from '@/ui/vault'
 const shape = defineModel<string>('shape', { required: true })
 const color = defineModel<string>('color', { required: true })
 const expression = defineModel<string>('expression', { required: true })
+const eyeColor = defineModel<string>('eyeColor', { default: 'blanc' })
 
 /**
  * Les vignettes sont figees a la meme date que la pose de repos : elles montrent
@@ -26,6 +27,7 @@ function resetToDefault() {
   shape.value = 'nuage'
   color.value = isDark.value ? 'blanc' : 'encre'
   expression.value = DEFAULT_EXPRESSION
+  eyeColor.value = color.value === 'blanc' ? 'encre' : 'blanc'
 }
 
 function randomize() {
@@ -48,7 +50,8 @@ function onSaveCurrent() {
     name,
     shape: shape.value,
     color: color.value,
-    expression: expression.value
+    expression: expression.value,
+    eyeColor: eyeColor.value
   })
 
   newAvatarName.value = ''
@@ -66,6 +69,21 @@ function onSaveCurrent() {
       <div class="flex items-center justify-between">
         <h2 class="text-sm font-semibold">{{ t('panel.shape') }}</h2>
         <div class="flex items-center gap-1.5">
+          <!-- Couleur des yeux (blanc / noir) -->
+          <button
+            type="button"
+            class="flex items-center gap-1.5 rounded-md px-2 py-0.5 text-xs font-medium text-[var(--muted)] hover:bg-[var(--line)] hover:text-[var(--ink)] transition cursor-pointer"
+            :title="eyeColor === 'blanc' ? t('panel.eye_white') : t('panel.eye_black')"
+            :aria-label="eyeColor === 'blanc' ? t('panel.eye_white') : t('panel.eye_black')"
+            @click="eyeColor = eyeColor === 'blanc' ? 'encre' : 'blanc'"
+          >
+            <svg class="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+              <circle cx="12" cy="12" r="3" :fill="eyeColor === 'blanc' ? '#ffffff' : '#0a0a0c'" :stroke="eyeColor === 'blanc' ? '#71717a' : 'none'" stroke-width="1.5" />
+            </svg>
+            <span>{{ eyeColor === 'blanc' ? t('panel.eye_white') : t('panel.eye_black') }}</span>
+          </button>
+
           <!-- Reinitialiser -->
           <button
             type="button"
@@ -105,6 +123,7 @@ function onSaveCurrent() {
           :shape="s.id"
           :color="color"
           :expression="expression"
+          :eye-color="eyeColor"
           :frozen-at="PREVIEW_AT"
           @click="shape = s.id"
         />
@@ -141,6 +160,7 @@ function onSaveCurrent() {
           :shape="shape"
           :color="color"
           :expression="e.id"
+          :eye-color="eyeColor"
           :frozen-at="PREVIEW_AT"
           @click="expression = e.id"
         />

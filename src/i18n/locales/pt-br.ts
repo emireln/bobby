@@ -29,7 +29,9 @@ const ptBr: typeof en = {
     expression: 'Expressão',
     color: 'Cor',
     randomize: 'Aleatório',
-    reset: 'Restaurar padrão'
+    reset: 'Restaurar',
+    eye_white: 'Olhos brancos',
+    eye_black: 'Olhos pretos'
   },
 
   vault: {

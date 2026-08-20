@@ -162,9 +162,9 @@ function locate(id: StateId) {
  * de l'utilisateur, pas un reglage de session. On valide au chargement, un id
  * inconnu retombe sur le defaut.
  */
-function stored(nom: NomStocke, fallback: string, exists: (v: string) => boolean) {
+function stored<T extends string>(nom: NomStocke, fallback: T, exists: (v: string) => boolean): T {
   const v = lis(nom)
-  return v && exists(v) ? v : fallback
+  return (v && exists(v) ? v : fallback) as T
 }
 
 const activeId = ref(
@@ -442,27 +442,29 @@ const droite = computed(() => !nue.value && view.value !== 'reglages')
 
 /* ------------------------------------------------------------------- skins */
 
-const shape = ref(stored('forme', DEFAULT_SHAPE, (v) => SHAPE_BY_ID.has(v)))
-const color = ref(stored('couleur', isDark.value ? 'blanc' : DEFAULT_COLOR, (v) => COLOR_BY_ID.has(v)))
-const expression = ref(
-  stored('expression', DEFAULT_EXPRESSION, (v) => EXPRESSION_BY_ID.has(v))
+const shape = ref<string>(stored('forme', DEFAULT_SHAPE as string, (v) => SHAPE_BY_ID.has(v)))
+const color = ref<string>(stored('couleur', (isDark.value ? 'blanc' : DEFAULT_COLOR) as string, (v) => COLOR_BY_ID.has(v)))
+const expression = ref<string>(
+  stored('expression', DEFAULT_EXPRESSION as string, (v) => EXPRESSION_BY_ID.has(v))
+)
+const eyeColor = ref<string>(
+  stored('yeux', 'blanc', (v) => v === 'blanc' || v === 'encre')
 )
 
 watch(shape, (v) => ecris('forme', v))
 watch(color, (v) => ecris('couleur', v))
 watch(expression, (v) => ecris('expression', v))
+watch(eyeColor, (v) => ecris('yeux', v))
 
-/**
- * Le corps du bot est peint sur un fond OPAQUE de la couleur de la page (ce qui
- * bouche les yeux, qui sont des trous). Sans lui, en sombre, cette planche
- * restait `#f9f9f9` : un disque beige derriere le geant des reglages.
- */
-const fondGlobal = computed(() => (isDark.value ? '#09090b' : '#f9f9f9'))
+const eyeHex = computed(() => (eyeColor.value === 'encre' ? '#0a0a0c' : '#ffffff'))
 
-function onLoadSavedAvatar(av: { shape: string; color: string; expression: string }) {
+function onLoadSavedAvatar(av: { shape: string; color: string; expression: string; eyeColor?: string }) {
   shape.value = av.shape
   color.value = av.color
   expression.value = av.expression
+  if (av.eyeColor === 'blanc' || av.eyeColor === 'encre') {
+    eyeColor.value = av.eyeColor
+  }
 }
 
 /**
@@ -733,12 +735,12 @@ async function exporte(id: ActionId, confirme = false) {
       // L'animation ne part PAS du SVG affiche : elle est rejouee depuis le debut
       // sur une instance hors ecran. Cf. `sequenceDuBot`.
       const reglages = { shape: shape.value, color: color.value, expression: expression.value }
-      telecharge(await versSvgAnime(reglages, action.taille, ANIM_IMAGES, ANIM_PAS), nom())
+      telecharge(await versSvgAnime(reglages, action.taille, ANIM_IMAGES, ANIM_PAS, eyeHex.value), nom())
       etatExport.value = 'exporte'
     } else if (action.mode === 'gif') {
       const reglages = { shape: shape.value, color: color.value, expression: expression.value }
       const fond = couleurDeFond(fondGif.value)
-      telecharge(await versGifAnime(reglages, action.taille, GIF_IMAGES, GIF_PAS, fond), nom())
+      telecharge(await versGifAnime(reglages, action.taille, GIF_IMAGES, GIF_PAS, fond, eyeHex.value), nom())
       etatExport.value = 'exporte'
     } else {
       const markup = svgAutonome(svg, action.taille)
@@ -804,7 +806,7 @@ watch(
           :color="color"
           :expression="expression"
           :frozen-at="POSES[s.id]"
-          :paper="fondGlobal"
+          :paper="eyeHex"
         />
         <figcaption class="text-xs text-[var(--muted)]">{{ t(`states.${s.id}`) }}</figcaption>
       </figure>
@@ -936,7 +938,7 @@ watch(
             :expression="humeur ?? expression"
             :follow="view === 'reglages'"
             :gaze="intro ? INTRO_GAZE : null"
-            :paper="fondGlobal"
+            :paper="eyeHex"
           />
         </div>
 
@@ -986,6 +988,7 @@ watch(
               :shape="shape"
               :color="color"
               :expression="expression"
+              :eye-color="eyeColor"
               :frozen-at="POSES[s.id]"
               @click="addBlock(s.id)"
             />
@@ -998,6 +1001,7 @@ watch(
             :shape="shape"
             :color="color"
             :expression="expression"
+            :eye-color="eyeColor"
             @load="onLoadSavedAvatar"
           />
         </template>
@@ -1008,6 +1012,7 @@ watch(
             v-model:shape="shape"
             v-model:color="color"
             v-model:expression="expression"
+            v-model:eye-color="eyeColor"
           />
         </template>
       </aside>

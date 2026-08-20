@@ -11,7 +11,7 @@
 const PREFIXE = 'bobby:'
 
 /** Tout ce que l'application persiste. */
-const NOMS = ['cycles', 'cycle', 'forme', 'couleur', 'expression', 'langue', 'theme', 'bulle', 'coffre'] as const
+const NOMS = ['cycles', 'cycle', 'forme', 'couleur', 'expression', 'langue', 'theme', 'bulle', 'coffre', 'yeux'] as const
 
 export type NomStocke = (typeof NOMS)[number]
 

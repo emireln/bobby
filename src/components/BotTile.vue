@@ -22,6 +22,8 @@ withDefaults(
     shape?: string
     color?: string
     expression?: string
+    eyeColor?: string
+    paper?: string
     size?: number
   }>(),
   {
@@ -48,6 +50,7 @@ withDefaults(
       :shape="shape"
       :color="color"
       :expression="expression"
+      :paper="paper ?? (eyeColor ? (eyeColor === 'encre' ? '#0a0a0c' : '#ffffff') : undefined)"
       :frozen-at="frozenAt"
     />
     <!-- 12 px : en dessous, une legende n'est plus lisible pour tout le monde -->

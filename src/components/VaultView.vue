@@ -19,6 +19,7 @@ const props = defineProps<{
   shape: string
   color: string
   expression: string
+  eyeColor?: string
 }>()
 
 const emit = defineEmits<{
@@ -82,7 +83,8 @@ function onUpdateAvatarLook(id: string, event: Event) {
     {
       shape: props.shape,
       color: props.color,
-      expression: props.expression
+      expression: props.expression,
+      eyeColor: props.eyeColor
     },
     vault.value
   )
@@ -297,6 +299,7 @@ function onFileSelected(e: Event) {
             :shape="av.shape"
             :color="av.color"
             :expression="av.expression"
+            :paper="av.eyeColor === 'encre' ? '#0a0a0c' : '#ffffff'"
             :frozen-at="PREVIEW_AT"
             :size="76"
           />
